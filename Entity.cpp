@@ -25,21 +25,6 @@ const uint8_t SOUND_INTERVAL = 40;
 std::vector<Entity*> entity = std::vector<Entity*>();
 std::vector<Projectile*> projectile = std::vector<Projectile*>();
 
-class Projectile {
-public:
-  float vel_X, vel_Y;
-  double pos_X, pos_Y;
-  bool had_hit = false;
-  bool was_successful = false;
-  float opacity = 1;
-  Entity* shooter;
-
-  void move();
-  Projectile(double, double, float, Entity*);
-  ~Projectile();
-
-};
-
 class Entity {
   public:
     uint8_t type; // 0 Villager, 1 Zombie
@@ -59,13 +44,13 @@ class Entity {
     float health_score = 255, speed = NORMAL_SPEED, power_score = 1;
 
     Entity (uint8_t, double, double);
-    Entity ();
+    Entity (); //For dummy entity
 
     void think (bool);
     void moveTowards (uint16_t, uint16_t);
     bool tryDir (float, float);
     void move ();
-    void harm (uint8_t);
+    void harm (Entity*, uint8_t);
     void animate ();
     void shoot(Entity*);
     void shootDir();
@@ -78,6 +63,21 @@ class Entity {
       Entity* target = NULL;
       float animate_clock = 0;
       float sound_pitch;
+};
+
+class Projectile {
+  public:
+    float vel_X, vel_Y;
+    double pos_X, pos_Y;
+    bool had_hit = false;
+    bool was_successful = false;
+    float opacity = 1;
+    Entity* shooter;
+
+    void move();
+    Projectile(double, double, float, Entity*);
+    ~Projectile();
+
 };
 
 Entity::Entity (uint8_t type, double pos_X, double pos_Y)
@@ -115,14 +115,14 @@ void Entity::reward()
 void Entity::lashOut ()
 {
     if (target->type != E_ZOMBIE) {
-        target->harm(power_score);
+        target->harm(this, power_score);
         reward();
     } else {
         attack_timeout = 0;
     }
 }
 
-void Entity::harm (uint8_t damage)
+void Entity::harm (Entity* attacker, uint8_t damage)
 {
     int8_t sound_id = -1;
   //Select sound
@@ -148,6 +148,10 @@ void Entity::harm (uint8_t damage)
             speed = NORMAL_SPEED*3; //For the animation
         }
     }
+  //If a zombie, attack the attacker
+   if (type == E_ZOMBIE) {
+       attack(attacker);
+   }
   //Play sound
     if (sound_id > 0) {
         playSound(sound_id, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, prot->pos_X, prot->pos_Y);
@@ -219,7 +223,7 @@ bool Entity::tryDir (float dir_X, float dir_Y)
         pos_X = new_X;
         pos_Y = new_Y;
         if (check_sprite == S_CAMPFIRE) {
-            harm(10);
+            harm(entity[0], 10);
         }
         return true;
     } else {
@@ -287,7 +291,8 @@ void Entity::shootDir ()
 
 
 
-Projectile::Projectile(double pos_X, double pos_Y, float rot, Entity* shooter) {
+Projectile::Projectile (double pos_X, double pos_Y, float rot, Entity* shooter)
+{
     this->pos_X = pos_X;
     this->pos_Y = pos_Y;
     this->shooter = shooter;
@@ -296,7 +301,7 @@ Projectile::Projectile(double pos_X, double pos_Y, float rot, Entity* shooter) {
     vel_Y *= PROJECTILE_SPEED;
 }
 
-void Projectile::move()
+void Projectile::move ()
 {
     pos_X += vel_X;
     pos_Y += vel_Y;
@@ -311,14 +316,14 @@ void Projectile::move()
         if (here->index_in_array && here->type == E_ZOMBIE && !here->is_dead && here->index_in_array != shooter->index_in_array) {
             if (uint16_t(here->pos_X) == uint16_t(pos_X) && uint16_t(here->pos_Y) == uint16_t(pos_Y)) {
                 had_hit = was_successful = true;
-                here->harm(PROJECTILE_DAMAGE);
+                here->harm(shooter, PROJECTILE_DAMAGE);
                 shooter->reward();
             }
         }
         if (below->index_in_array && below->type == E_ZOMBIE && !below->is_dead && below->index_in_array != shooter->index_in_array) {
             if (uint16_t(below->pos_X) == uint16_t(pos_X - 1) && uint16_t(below->pos_Y) == uint16_t(pos_Y + 1)) {
                 had_hit = was_successful = true;
-                below->harm(PROJECTILE_DAMAGE);
+                below->harm(shooter, PROJECTILE_DAMAGE);
                 shooter->reward();
             }
         }
