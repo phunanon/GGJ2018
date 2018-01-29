@@ -14,7 +14,6 @@
 
 ## Should do
 - Add torch
-- Remove campfires from grass
 - Healing points (+ remove reward)
 - Ensure Entities don't attack/shoot through solid sprites
 - Add killcount floating text

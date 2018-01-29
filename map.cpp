@@ -194,7 +194,7 @@ void genMap ()
                 }
             }
             uint8_t biome_code = getBiome(x, y);
-            if ( !getSprite(x, y) && (biome_code == B_STONE && rb(.05)) || (biome_code == B_GRASS && rb(.01))) {
+            if (biome_code == B_STONE && rb(.05) && !getSprite(x, y)) {
               //Add random fireplace and luminosity
                 setSprite(x, y, 3);
                 setAnimated(x, y, true);
