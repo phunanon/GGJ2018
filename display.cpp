@@ -224,7 +224,10 @@ void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window, s
             g *= daynight_colour(game_time, x, y);
             b *= daynight_colour(game_time, x, y);
             //Modulate for if hurt
-            if (entity[e]->prev_hurt + HURT_ANI_LEN > game_time) { r = 255; g /= 2; b /= 2; }
+            if (entity[e]->prev_hurt + HURT_ANI_LEN > game_time) {
+                if (entity[e]->type == E_VILLAGER) { r = 255; g /= 2; b /= 2; }
+                if (entity[e]->type == E_ZOMBIE) { r /= 2; g = 255; b /= 2; }
+            }
             sf::Color color (r, g, b);
             //Texture & Display
             switch (entity[e]->type) {
