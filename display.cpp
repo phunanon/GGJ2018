@@ -298,6 +298,8 @@ void drawProjectiles (Entity* prot, uint32_t game_time, sf::RenderWindow &window
             projectileTile.setPosition(sf::Vector2f(draw_X, draw_Y));
             if (projectile[p]->was_successful) {
                 projectileTile.setFillColor(sf::Color(255, 0, 0, projectile[p]->opacity * 255));
+                projectile[p]->pos_Y += .02;
+                projectile[p]->pos_X -= .02;
             } else {
                 projectileTile.setFillColor(sf::Color(0, 0, 0, projectile[p]->opacity * 255));
             }
