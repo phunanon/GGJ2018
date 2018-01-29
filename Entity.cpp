@@ -43,7 +43,7 @@ class Entity {
 
     uint8_t attack_timeout = 0;
     uint64_t targetted_at = 0; //Last time this Entity was targetted
-    int64_t prev_hurt = -100; //Last time this entity was hurt
+    uint64_t prev_hurt = 0; //Last time this entity was hurt
 
     float health_score = 255, speed = NORMAL_SPEED, power_score = 1;
 
@@ -132,12 +132,12 @@ void Entity::harm (Entity* attacker, uint8_t damage)
     int8_t sound_id = -1;
   //Select sound
     if (prev_hurt + SOUND_INTERVAL < game_time) {
-        prev_hurt = game_time;
         switch (type) {
             case E_VILLAGER: sound_id = AUD_VILLAGER_HURT; break;
             case E_ZOMBIE: sound_id = AUD_ZOMBIE_HURT; break;
         }
     }
+    prev_hurt = game_time;
   //Deal damage
     health_score -= damage;
   //Check if dead
