@@ -73,6 +73,7 @@ class Entity {
       void lashOut ();
       Entity* target = NULL;
       float animate_clock = 0;
+      float sound_pitch;
 };
 
 Entity::Entity (uint8_t type, double pos_X, double pos_Y)
@@ -82,6 +83,7 @@ Entity::Entity (uint8_t type, double pos_X, double pos_Y)
     this->pos_X = this->targ_X = pos_X;
     this->pos_Y = this->targ_X = pos_Y;
     this->animate_clock = ri(0, ANI_INTERVAL);
+    this->sound_pitch = rf(.75, 1.50);
 }
 
 Entity::Entity () { }
@@ -122,9 +124,9 @@ void Entity::harm (uint8_t damage)
         prev_hurt = game_time;
         if(type == E_VILLAGER)
         {
-          playSound(AUD_VILLAGER_HURT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+          playSound(AUD_VILLAGER_HURT, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
         } else if (type == E_ZOMBIE) {
-          playSound(AUD_ZOMBIE_HURT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+          playSound(AUD_ZOMBIE_HURT, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
         }
     }
     health_score -= damage;
@@ -133,7 +135,7 @@ void Entity::harm (uint8_t damage)
             type = E_ZOMBIE;
             health_score = MAX_HEALTH;
         } else if (type == E_ZOMBIE) {
-          playSound(AUD_ZOMBIE_DIE, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+          playSound(AUD_ZOMBIE_DIE, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
             is_dead = true;
             health_score = 0;
             frame = 0;

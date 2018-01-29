@@ -18,7 +18,6 @@
 - Healing points (+ remove reward)
 - Add killcount floating text
 - test out protag random gun accuracy
-- Entity personalised sound pitches
 - background music
 - Put popular variables in global scope
     - game_time
