@@ -11,6 +11,9 @@ const uint8_t TILE_W = 64, TILE_H = 32;
 const uint8_t SPRITE_W = 64, SPRITE_H = 64;
 const uint16_t WINDOW_W = 1024, WINDOW_H = 512;
 
+const uint8_t HURT_ANI_LEN = 10;
+
+//Minimap stuff
 const uint16_t mm_size = WINDOW_W / 8; //Size of minimap on the screen
 const uint16_t mm_diag_width = sqrt(pow(mm_size, 2) + pow(mm_size, 2)); //Width of minimap rotated 45deg
 const uint32_t mm_len = MAP_A * 4;
@@ -220,6 +223,8 @@ void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window, s
             r *= daynight_colour(game_time, x, y);
             g *= daynight_colour(game_time, x, y);
             b *= daynight_colour(game_time, x, y);
+            //Modulate for if hurt
+            if (entity[e]->prev_hurt + HURT_ANI_LEN > game_time) { r = 255; g /= 2; b /= 2; }
             sf::Color color (r, g, b);
             //Texture & Display
             switch (entity[e]->type) {
