@@ -96,7 +96,7 @@ int main ()
         } while (getBiome(x, y) != B_STONE || getSprite(x, y));
         entity.push_back(new Entity(0, x, y));
     }
-    Entity* prot = entity[1];
+    prot = entity[1];
   //Spawn Zombies
     for (uint16_t z = 0; z < GEN_ZOMBIES; ++z) {
         uint16_t x, y;

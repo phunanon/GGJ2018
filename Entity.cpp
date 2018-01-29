@@ -3,6 +3,11 @@
 #define E_VILLAGER 0
 #define E_ZOMBIE   1
 
+class Entity;
+class Projectile;
+
+Entity* prot; //Protagonist
+
 const uint8_t ENTITY_W = 32, ENTITY_H = 64;
 const uint16_t GEN_VILLAGERS = 1024;
 const uint16_t GEN_ZOMBIES = 256;
@@ -16,9 +21,8 @@ const float PROJECTILE_SPEED = .25;
 const float REWARD_HEALTH = 10;
 const uint8_t SOUND_INTERVAL = 40;
 
-class Entity;
+
 std::vector<Entity*> entity = std::vector<Entity*>();
-class Projectile;
 std::vector<Projectile*> projectile = std::vector<Projectile*>();
 
 class Projectile {
@@ -120,27 +124,33 @@ void Entity::lashOut ()
 
 void Entity::harm (uint8_t damage)
 {
+    int8_t sound_id = -1;
+  //Select sound
     if (prev_hurt + SOUND_INTERVAL < game_time) {
         prev_hurt = game_time;
-        if(type == E_VILLAGER)
-        {
-          playSound(AUD_VILLAGER_HURT, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
-        } else if (type == E_ZOMBIE) {
-          playSound(AUD_ZOMBIE_HURT, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+        switch (type) {
+            case E_VILLAGER: sound_id = AUD_VILLAGER_HURT; break;
+            case E_ZOMBIE: sound_id = AUD_ZOMBIE_HURT; break;
         }
     }
+  //Deal damage
     health_score -= damage;
+  //Check if dead
     if (health_score < 0) {
         if (type == E_VILLAGER) {
             type = E_ZOMBIE;
             health_score = MAX_HEALTH;
         } else if (type == E_ZOMBIE) {
-          playSound(AUD_ZOMBIE_DIE, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+            sound_id = AUD_ZOMBIE_DIE;
             is_dead = true;
             health_score = 0;
             frame = 0;
             speed = NORMAL_SPEED*3; //For the animation
         }
+    }
+  //Play sound
+    if (sound_id > 0) {
+        playSound(sound_id, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, prot->pos_X, prot->pos_Y);
     }
 }
 
@@ -262,14 +272,14 @@ void Entity::shoot (Entity* victim)
     double dir_X, dir_Y;
     targToVec(this->pos_X, this->pos_Y, victim->pos_X, victim->pos_Y, dir_X, dir_Y);
     float dir_ang = vecToAng(dir_X, dir_Y);
-    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, prot->pos_X, prot->pos_Y);
     this->rot = dir_ang;
     projectile.push_back(new Projectile(this->pos_X, this->pos_Y, dir_ang, this));
 }
 
 void Entity::shootDir ()
 {
-    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, prot->pos_X, prot->pos_Y);
     projectile.push_back(new Projectile(this->pos_X, this->pos_Y, this->rot, this));
 }
 
