@@ -172,7 +172,7 @@ int main ()
             Entity* ent = entity[e];
             ent->animate();
             if (ent->is_dead) { continue; }
-            if (rb(0.01)) { ent->think(is_nighttime); }
+            if (rb(0.02)) { ent->think(is_nighttime); }
             ent->move();
 
             ++ents;

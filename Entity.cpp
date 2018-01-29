@@ -163,19 +163,19 @@ void Entity::think (bool is_nighttime)
 {
     switch (type) {
         case 0: //Villager
-          //Loiter
-            if (rb(.4)) { loiter(); }
-            // Find zombie to shoot at
-              if(rb(.5)) {
+          //Find zombie to shoot at
+            if(rb(.5)) {
                 for (uint16_t e = 0; e < entity.size(); ++e)
                 {
-                  if (entity[e]->type != E_ZOMBIE || entity[e]->is_dead) { continue; }
-                  if (eD_approx(pos_X, pos_Y, entity[e]->pos_X, entity[e]->pos_Y) < SHOOT_DISTANCE / (is_nighttime+1)) {
-                    shoot(entity[e]);
-                    break;
-                  }
+                    if (entity[e]->type != E_ZOMBIE || entity[e]->is_dead) { continue; }
+                    if (eD_approx(pos_X, pos_Y, entity[e]->pos_X, entity[e]->pos_Y) < SHOOT_DISTANCE / (is_nighttime+1)) {
+                        shoot(entity[e]);
+                        break;
+                    }
                 }
-              }
+            }
+          //Loiter
+            if (rb(.4)) { loiter(); }
             break;
         case 1: //Zombie
             if (attack_timeout) {
@@ -185,17 +185,17 @@ void Entity::think (bool is_nighttime)
                     speed = NORMAL_SPEED;
                 }
             } else {
-              //Loiter
-                loiter();
               //Find a Villager to attack
                 for (uint16_t e = 0; e < entity.size(); ++e) {
                     if (entity[e]->type != E_VILLAGER || entity[e]->is_dead) { continue; }
                     if (eD_approx(pos_X, pos_Y, entity[e]->pos_X, entity[e]->pos_Y) < ATTACK_DISTANCE * (is_nighttime+1)) {
                         if (entity[e]->targetted_at + 50 > game_time) { continue; }
                         attack(entity[e]);
-                        break;
+                        return;
                     }
                 }
+              //Loiter
+                loiter();
             }
             break;
     }
