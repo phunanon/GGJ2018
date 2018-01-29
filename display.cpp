@@ -3,9 +3,6 @@
 #include "Entity.cpp"
 
 
-sf::Text txt_float;
-
-
 const uint8_t TILE_SCALE = 32;
 const uint8_t TILE_W = 64, TILE_H = 32;
 const uint8_t SPRITE_W = 64, SPRITE_H = 64;
@@ -13,6 +10,15 @@ const uint16_t WINDOW_W = 1024, WINDOW_H = 512;
 
 const uint8_t HURT_ANI_LEN = 10;
 
+//Display tiles
+sf::Text txt_float;
+sf::Text txt_HUD;
+sf::Sprite biomeTile;
+sf::Sprite spriteTile;
+sf::Sprite entityTile;
+sf::Sprite villagerTile;
+sf::Sprite zombieTile;
+sf::CircleShape projectileTile (2);
 //Minimap stuff
 const uint16_t mm_size = WINDOW_W / 8; //Size of minimap on the screen
 const uint16_t mm_diag_width = sqrt(pow(mm_size, 2) + pow(mm_size, 2)); //Width of minimap rotated 45deg
@@ -70,7 +76,7 @@ void getZombieTex (Entity* e, uint16_t &tex_X, uint16_t &tex_Y)
 
 
 
-void drawBiome (Entity* prot, uint32_t game_time, sf::RenderWindow &window, sf::Sprite &biomeTile, uint16_t x, uint16_t y, double draw_X, double draw_Y)
+void drawBiome (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uint16_t x, uint16_t y, double draw_X, double draw_Y)
 {
     uint32_t *mapPtr = &map[x][y];
   //Prepare biome for draw
@@ -116,7 +122,7 @@ void drawBiome (Entity* prot, uint32_t game_time, sf::RenderWindow &window, sf::
     window.draw(biomeTile);
 }
 
-void drawSprite (Entity* prot, uint32_t game_time, sf::RenderWindow &window, sf::Sprite &spriteTile, uint16_t x, uint16_t y, double draw_X, double draw_Y)
+void drawSprite (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uint16_t x, uint16_t y, double draw_X, double draw_Y)
 {
     uint32_t *mapPtr = &map[x][y];
     uint8_t sprite_code = getSprite(x, y);
@@ -146,7 +152,7 @@ void drawSprite (Entity* prot, uint32_t game_time, sf::RenderWindow &window, sf:
     }
 }
 
-void doISOMETRIC (Entity* prot, uint32_t game_time, sf::RenderWindow &window, void (*drawer)(Entity* prot, uint32_t, sf::RenderWindow&, sf::Sprite&, uint16_t, uint16_t, double, double), sf::Sprite tile)
+void doISOMETRIC (Entity* prot, uint32_t game_time, sf::RenderWindow &window, void (*drawer)(Entity* prot, uint32_t, sf::RenderWindow&, uint16_t, uint16_t, double, double))
 {
   //Calculate map crop (as map coords)
     int16_t tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2, camera_W, camera_H;
@@ -174,7 +180,7 @@ void doISOMETRIC (Entity* prot, uint32_t game_time, sf::RenderWindow &window, vo
       for (int16_t x = camera_X2; x >= camera_X1; --x) {
           if (draw_X > -TILE_W && draw_X < WINDOW_W + TILE_W && draw_Y > -TILE_H && draw_Y < WINDOW_H + TILE_H) {
             //Prepare and call upon the argument drawer function
-              (*drawer)(prot, game_time, window, tile, x, y, draw_X, draw_Y);
+              (*drawer)(prot, game_time, window, x, y, draw_X, draw_Y);
           }
         //Move half left and half down
           draw_X -= TILE_W / 2;
@@ -188,7 +194,7 @@ void doISOMETRIC (Entity* prot, uint32_t game_time, sf::RenderWindow &window, vo
     }
 }
 
-void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window, sf::Sprite villagerTile, sf::Sprite zombieTile)
+void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
 {
     double tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2, camera_W, camera_H;
     tiles_X = (WINDOW_W / TILE_SCALE);
@@ -259,7 +265,7 @@ void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window, s
     }
 }
 
-void drawProjectiles (Entity* prot, uint32_t game_time, sf::RenderWindow &window, sf::CircleShape projectileTile)
+void drawProjectiles (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
 {
     double tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2, camera_W, camera_H;
     tiles_X = (WINDOW_W / TILE_SCALE);
@@ -300,15 +306,15 @@ void drawProjectiles (Entity* prot, uint32_t game_time, sf::RenderWindow &window
     }
 }
 
-void doDISPLAY (Entity* prot, uint32_t game_time, sf::RenderWindow &window, sf::Sprite &biomeTile, sf::Sprite &spriteTile, sf::Sprite &villagerTile, sf::Sprite &zombieTile, sf::CircleShape projectileTile, sf::Text txt_float, sf::Text txt_HUD, bool is_lazy = false)
+void doDISPLAY (Entity* prot, uint32_t game_time, sf::RenderWindow &window, bool is_lazy = false)
 {
     window.clear(sf::Color(255, 255, 255));
 
-    doISOMETRIC(prot, game_time, window, drawBiome, biomeTile);
-    doISOMETRIC(prot, game_time, window, drawSprite, spriteTile);
+    doISOMETRIC(prot, game_time, window, drawBiome);
+    doISOMETRIC(prot, game_time, window, drawSprite);
 
-    drawEntities(prot, game_time, window, villagerTile, zombieTile);
-    drawProjectiles(prot, game_time, window, projectileTile);
+    drawEntities(prot, game_time, window);
+    drawProjectiles(prot, game_time, window);
 
     window.draw(txt_HUD);
 

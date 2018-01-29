@@ -15,24 +15,17 @@ int main ()
 
 
   //Declare asset thingies
-    sf::Text txt_HUD;
     sf::Font fnt_arial;
     sf::Image biomeTexImg;
     sf::Texture biomeTexture;
-    sf::Sprite biomeTile;
     sf::Image spriteTexImg;
     sf::Texture spriteTexture;
-    sf::Sprite spriteTile;
     sf::Image entityTexImg;
     sf::Texture entityTexture;
-    sf::Sprite entityTile;
     sf::Image villagerTexImg;
     sf::Texture villagerTexture;
-    sf::Sprite villagerTile;
     sf::Image zombieTexImg;
     sf::Texture zombieTexture;
-    sf::Sprite zombieTile;
-    sf::CircleShape projectileTile (3);
   //Load textures/fonts
     if (!fnt_arial.loadFromFile("assets/arial.ttf"))
     {
@@ -50,9 +43,6 @@ int main ()
     if (!zombieTexImg.loadFromFile("assets/zombie.png")) {
         std::cout << "Couldn't load assets/zombie.png" << std::endl;
     }
-
-  //Init sound
-    initSound();
 
 
     txt_float.setFont(fnt_arial);
@@ -74,13 +64,16 @@ int main ()
     zombieTile.setTexture(zombieTexture);
     zombieTexture.setSmooth(false);
     projectileTile.setFillColor(sf::Color::Red);
-  //Minimap
+  //Init Minimap
     mm_tex.create(MAP_W, MAP_H);
     minimap.scale(float(mm_size) / float(MAP_W), float(mm_size) / float(MAP_H));
     minimap.setOutlineThickness(1);
     minimap.setOutlineColor(sf::Color(0, 0, 0));
     minimap.setPosition(sf::Vector2f(0, mm_diag_width / 2));
     minimap.setRotation(-45);
+
+  //Init sound
+    initSound();
 
   //Generate map
     genMap();
@@ -163,7 +156,7 @@ int main ()
         prot->rot = prot->rot;
 
       //DISPLAY
-        doDISPLAY(prot, game_time, window, biomeTile, spriteTile, villagerTile, zombieTile, projectileTile, txt_float, txt_HUD, !(game_time % 50));
+        doDISPLAY(prot, game_time, window, !(game_time % 50));
 
       //Entity & Projectile stuff
         bool is_nighttime = sky_darkness < .4;
