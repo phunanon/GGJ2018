@@ -13,6 +13,7 @@
 - Make zombies attack when shot
 
 ## Should do
+- Projectiles hit tile above too (for headshots)
 - Add torch
 - Healing points (+ remove reward)
 - Ensure Entities don't attack/shoot through solid sprites
@@ -37,6 +38,7 @@
 - Crate destruction
 - Stop shooting/movement unless mouse is in window
 - Add granade which can be thrown over Sprites
+- Comb through code and conform to syntax style
 
 
 ## Won't do
