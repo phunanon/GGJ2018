@@ -45,7 +45,7 @@ class Entity {
     uint64_t targetted_at = 0; //Last time this Entity was targetted
     uint64_t prev_hurt = 0; //Last time this entity was hurt
 
-    float health_score = 255, speed = NORMAL_SPEED, power_score = 20;
+    float health_score = MAX_HEALTH, speed = NORMAL_SPEED, power_score = 20;
 
     Entity (uint8_t, double, double);
     Entity (); //For dummy entity

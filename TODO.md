@@ -17,7 +17,6 @@
 - test out protag random gun accuracy
 - background music
 - Zombie bite animation
-- Graphic health bar
 - Float texts for damage dealt
 - Make day longer than night again
 - Write CREDITS.md
@@ -35,6 +34,7 @@
 - Comb through code and conform to syntax style
 - More variation in sounds
 - Change protag indicator to above-head arrow
+- Mouse crosshair
 
 
 ## Won't do

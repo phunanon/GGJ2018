@@ -18,6 +18,7 @@ sf::Sprite spriteTile;
 sf::Sprite entityTile;
 sf::Sprite villagerTile;
 sf::Sprite zombieTile;
+sf::RectangleShape healthBar;
 sf::CircleShape projectileTile (2);
 //Minimap stuff
 const uint16_t mm_size = WINDOW_W / 8; //Size of minimap on the screen
@@ -254,12 +255,16 @@ void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
                     window.draw(zombieTile);
                     break;
             }
-          //Draw floating text
+          //Draw health bar
             if (!entity[e]->is_dead) {
-                txt_float.setPosition(sf::Vector2f(draw_X, draw_Y));
-                txt_float.setString(std::to_string(uint16_t(entity[e]->health_score / 255 * 100)));
-                txt_float.setFillColor(color);
-                window.draw(txt_float);
+                healthBar.setPosition(sf::Vector2f(draw_X, draw_Y));
+                float health_bar_len = ((entity[e]->health_score) / MAX_HEALTH) * ENTITY_W;
+                healthBar.setSize(sf::Vector2f(health_bar_len, 4));
+                r = 255 * (1 - (health_bar_len / ENTITY_W));
+                g = 255 * (health_bar_len / ENTITY_W);
+                b = 0;
+                healthBar.setFillColor(sf::Color(r, g, b));
+                window.draw(healthBar);
             }
         }
     }
