@@ -9,9 +9,15 @@
 - Fix Villager animations looking backwards at certain angles
 - Sprite/Entity enums used exclusively over numbers
 - Seperate audio into its own file
+- Ensure better that Entities can't pass through Sprites
+- Make zombies attack when shot
 
 ## Should do
+- Add torch
+- Remove campfires from grass
+- Healing points (+ remove reward)
 - Ensure Entities don't attack/shoot through solid sprites
+- Add killcount floating text
 - test out protag random gun accuracy
 - Entity personalised sound pitches
 - background music
@@ -23,12 +29,15 @@
 - Graphic health bar
 - Float texts for damage dealt
 - Make day longer than night again
+- Write CREDITS.md
 
 ## Could do
 - Animated foliage
 - Enable protag zombie mode
 - Fog
 - Crate destruction
+- Stop shooting/movement unless mouse is in window
+- Add granade which can be thrown over Sprites
 
 
 ## Won't do

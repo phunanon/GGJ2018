@@ -1,4 +1,4 @@
-#include "sound.cpp"
+#include "audio.cpp"
 
 #define E_VILLAGER 0
 #define E_ZOMBIE   1
@@ -10,11 +10,11 @@ const float ANI_INTERVAL = 2;
 const uint8_t SHOOT_DISTANCE = 16;
 const uint8_t ATTACK_DISTANCE = 16;
 const uint8_t MAX_HEALTH = 255;
-const float NORMAL_SPEED = .02, ATTACK_SPEED = .1;
+const float NORMAL_SPEED = .02, ATTACK_SPEED = .05;
 const uint8_t PROJECTILE_DAMAGE = 12;
 const float PROJECTILE_SPEED = .25;
 const float REWARD_HEALTH = 10;
-const uint8_t SOUND_INTERVAL = 30;
+const uint8_t SOUND_INTERVAL = 40;
 
 class Entity;
 std::vector<Entity*> entity = std::vector<Entity*>();
