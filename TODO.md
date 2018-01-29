@@ -7,7 +7,7 @@
     - with fast-think random tile
 - Fix sprite overlapping in display
 - Fix Villager animations looking backwards at certain angles
-- Sprite/Entity enums used exclusively over numbers
+- Sprite/Entity/Sound enums used exclusively over numbers
 - Seperate audio into its own file
 - Ensure better that Entities can't pass through Sprites
 - Make zombies attack when shot

@@ -7,7 +7,6 @@
 std::vector<sf::SoundBuffer*> soundBuffer;
 std::vector<sf::Sound*> soundChannel;
 
-// function to play sound
 uint8_t sCh = 0;
 void playSound (uint8_t sound, float pitch, double orgX, double orgY, double protag_X, double protag_Y) {
   //Load buffer
@@ -24,4 +23,20 @@ void playSound (uint8_t sound, float pitch, double orgX, double orgY, double pro
   //Change channel
     ++sCh;
     if (sCh == SOUNDCHANNELS) { sCh = 0; }
+}
+
+void initSound ()
+{
+  //Init soundBuffer
+    std::vector<std::string> sounds = {"gun_shot.ogg", "women_hurt.ogg", "zombiehurt.ogg", "zombiedie.ogg"};
+    for (uint a = 0; a < 4; ++a) {
+        soundBuffer.push_back(new sf::SoundBuffer);
+        if (!soundBuffer[a]->loadFromFile("assets/" + sounds[a])) {
+            std::cout << "ERR: Couldn't load sound: assets/" + std::to_string(a) << std::endl;
+        }
+    }
+    //Init sound channels
+    for (uint c = 0; c < SOUNDCHANNELS; ++c) {
+        soundChannel.push_back(new sf::Sound);
+    }
 }

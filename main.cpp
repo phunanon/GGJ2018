@@ -34,38 +34,25 @@ int main ()
     sf::Sprite zombieTile;
     sf::CircleShape projectileTile (3);
   //Load textures/fonts
-    if (!fnt_arial.loadFromFile("Assets/arial.ttf"))
+    if (!fnt_arial.loadFromFile("assets/arial.ttf"))
     {
-      std::cout << "Couldn't load Assets/arial.ttf" << std::endl;
+      std::cout << "Couldn't load assets/arial.ttf" << std::endl;
     }
-    if (!biomeTexImg.loadFromFile("Assets/biomes.png")) {
-        std::cout << "Couldn't load Assets/biomes.png" << std::endl;
+    if (!biomeTexImg.loadFromFile("assets/biomes.png")) {
+        std::cout << "Couldn't load assets/biomes.png" << std::endl;
     }
-    if (!spriteTexImg.loadFromFile("Assets/sprites.png")) {
-        std::cout << "Couldn't load Assets/sprites.png" << std::endl;
+    if (!spriteTexImg.loadFromFile("assets/sprites.png")) {
+        std::cout << "Couldn't load assets/sprites.png" << std::endl;
     }
-    if (!villagerTexImg.loadFromFile("Assets/villager.png")) {
-        std::cout << "Couldn't load Assets/villager.png" << std::endl;
+    if (!villagerTexImg.loadFromFile("assets/villager.png")) {
+        std::cout << "Couldn't load assets/villager.png" << std::endl;
     }
-    if (!zombieTexImg.loadFromFile("Assets/zombie.png")) {
-        std::cout << "Couldn't load Assets/zombie.png" << std::endl;
-    }
-
-    // Array of sounds to load
-    std::vector<std::string> sounds = {"gun_shot.ogg", "women_hurt.ogg", "zombiehurt.ogg", "zombiedie.ogg"};
-
-    //Init soundBuffer
-    for (uint a = 0; a < 4; ++a) {
-        soundBuffer.push_back(new sf::SoundBuffer);
-        if (!soundBuffer[a]->loadFromFile("Assets/" + sounds[a])) {
-            std::cout << "ERR: Couldn't load sound: audio/" + std::to_string(a) << std::endl;
-        }
-    }
-    //Init the channels
-    for (uint c = 0; c < SOUNDCHANNELS; ++c) {
-        soundChannel.push_back(new sf::Sound);
+    if (!zombieTexImg.loadFromFile("assets/zombie.png")) {
+        std::cout << "Couldn't load assets/zombie.png" << std::endl;
     }
 
+  //Init sound
+    initSound();
 
 
     txt_float.setFont(fnt_arial);
