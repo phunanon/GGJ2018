@@ -14,6 +14,7 @@ const uint16_t GEN_ZOMBIES = 256;
 const float ANI_INTERVAL = 2;
 const uint8_t SHOOT_DISTANCE = 16;
 const uint8_t ATTACK_DISTANCE = 16;
+const uint8_t LASHOUT_INTERVAL = 20;
 const uint8_t MAX_HEALTH = 255;
 const float NORMAL_SPEED = .02, ATTACK_SPEED = .06;
 const uint8_t PROJECTILE_DAMAGE = 12;
@@ -41,11 +42,10 @@ class Entity {
     uint8_t frame = 0;
     bool had_moved = true;
 
-    uint8_t attack_timeout = 0;
     uint64_t targetted_at = 0; //Last time this Entity was targetted
     uint64_t prev_hurt = 0; //Last time this entity was hurt
 
-    float health_score = 255, speed = NORMAL_SPEED, power_score = 1;
+    float health_score = 255, speed = NORMAL_SPEED, power_score = 20;
 
     Entity (uint8_t, double, double);
     Entity (); //For dummy entity
@@ -66,6 +66,8 @@ class Entity {
       void lashOut ();
       void step (StepDir, double, double, float);
       Entity* target = NULL;
+      uint8_t attack_timeout = 0;
+      uint64_t last_lashout = 0;
       float animate_clock = 0;
       float sound_pitch;
 };
@@ -119,11 +121,14 @@ void Entity::reward()
 
 void Entity::lashOut ()
 {
-    if (target->type != E_ZOMBIE) {
-        target->harm(this, power_score);
-        reward();
-    } else {
-        attack_timeout = 0;
+    if (last_lashout + LASHOUT_INTERVAL < game_time) {
+        last_lashout = game_time;
+        if (target->type != E_ZOMBIE) {
+            target->harm(this, power_score);
+            reward();
+        } else {
+            attack_timeout = 0;
+        }
     }
 }
 
