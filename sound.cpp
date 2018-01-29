@@ -3,6 +3,11 @@
 #define SOUNDCHANNELS 12
 #define EARSHOT 16
 
+#define AUD_SHOOT         0
+#define AUD_VILLAGER_HURT 1
+#define AUD_ZOMBIE_HURT   2
+#define AUD_ZOMBIE_DIE    3
+
 //Create soundBuffer vector
 std::vector<sf::SoundBuffer*> sound_buffers;
 std::vector<sf::Sound*> sound_channels;

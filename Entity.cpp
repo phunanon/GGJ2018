@@ -122,9 +122,9 @@ void Entity::harm (uint8_t damage)
         prev_hurt = game_time;
         if(type == E_VILLAGER)
         {
-          playSound(1, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+          playSound(AUD_VILLAGER_HURT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
         } else if (type == E_ZOMBIE) {
-          playSound(2, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+          playSound(AUD_ZOMBIE_HURT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
         }
     }
     health_score -= damage;
@@ -133,7 +133,7 @@ void Entity::harm (uint8_t damage)
             type = E_ZOMBIE;
             health_score = MAX_HEALTH;
         } else if (type == E_ZOMBIE) {
-          playSound(3, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+          playSound(AUD_ZOMBIE_DIE, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
             is_dead = true;
             health_score = 0;
             frame = 0;
@@ -154,7 +154,7 @@ void Entity::think (bool is_nighttime)
           //Loiter
             if (rb(.4)) { loiter(); }
             // Find zombie to shoot at
-              if(rb(.2)) {
+              if(rb(.5)) {
                 for (uint16_t e = 0; e < entity.size(); ++e)
                 {
                   if (entity[e]->type != E_ZOMBIE || entity[e]->is_dead) { continue; }
@@ -260,14 +260,14 @@ void Entity::shoot (Entity* victim)
     double dir_X, dir_Y;
     targToVec(this->pos_X, this->pos_Y, victim->pos_X, victim->pos_Y, dir_X, dir_Y);
     float dir_ang = vecToAng(dir_X, dir_Y);
-    playSound(0, rf(.5, 1.5), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
     this->rot = dir_ang;
     projectile.push_back(new Projectile(this->pos_X, this->pos_Y, dir_ang, this));
 }
 
 void Entity::shootDir ()
 {
-    playSound(0, rf(.5, 1.5), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
     projectile.push_back(new Projectile(this->pos_X, this->pos_Y, this->rot, this));
 }
 
