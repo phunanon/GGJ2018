@@ -10,7 +10,6 @@
 - Sprite/Entity enums used exclusively over numbers
 - Seperate audio into its own file
 - Ensure better that Entities can't pass through Sprites
-- Make zombies attack when shot
 - Ensure Entities don't attack/shoot through solid sprites
 
 ## Should do
@@ -29,7 +28,6 @@
 - Make day longer than night again
 - Write CREDITS.md
 - Blood animation when attacked by zombie
-- Red color Entity on recent hurt_time
 
 ## Could do
 - Animated foliage
@@ -40,6 +38,7 @@
 - Add granade which can be thrown over Sprites
 - Comb through code and conform to syntax style
 - More variation in sounds
+- Change protag indicator to above-head arrow
 
 
 ## Won't do

@@ -15,12 +15,16 @@ const float ANI_INTERVAL = 2;
 const uint8_t SHOOT_DISTANCE = 16;
 const uint8_t ATTACK_DISTANCE = 16;
 const uint8_t MAX_HEALTH = 255;
-const float NORMAL_SPEED = .02, ATTACK_SPEED = .05;
+const float NORMAL_SPEED = .02, ATTACK_SPEED = .06;
 const uint8_t PROJECTILE_DAMAGE = 12;
 const float PROJECTILE_SPEED = .25;
 const float REWARD_HEALTH = 10;
 const uint8_t SOUND_INTERVAL = 40;
 
+enum StepDir {
+    dir_away,
+    dir_toward
+};
 
 std::vector<Entity*> entity = std::vector<Entity*>();
 std::vector<Projectile*> projectile = std::vector<Projectile*>();
@@ -39,7 +43,7 @@ class Entity {
 
     uint8_t attack_timeout = 0;
     uint64_t targetted_at = 0; //Last time this Entity was targetted
-    uint64_t prev_hurt = 0; //Last time this entity was hurt
+    int64_t prev_hurt = -100; //Last time this entity was hurt
 
     float health_score = 255, speed = NORMAL_SPEED, power_score = 1;
 
@@ -60,6 +64,7 @@ class Entity {
       void loiter ();
       void attack (Entity*);
       void lashOut ();
+      void step (StepDir, double, double, float);
       Entity* target = NULL;
       float animate_clock = 0;
       float sound_pitch;
@@ -85,7 +90,7 @@ Entity::Entity (uint8_t type, double pos_X, double pos_Y)
     this->index_in_array = entity.size();
     this->type = type;
     this->pos_X = this->targ_X = pos_X;
-    this->pos_Y = this->targ_X = pos_Y;
+    this->pos_Y = this->targ_Y = pos_Y;
     this->animate_clock = ri(0, ANI_INTERVAL);
     this->sound_pitch = rf(.75, 1.50);
 }
@@ -102,13 +107,13 @@ void Entity::attack (Entity* who)
 
 void Entity::reward()
 {/*
-  if(this->health_score + REWARD_HEALTH > MAX_HEALTH)
+  if(health_score + REWARD_HEALTH > MAX_HEALTH)
   {
-    this->health_score = MAX_HEALTH;
+    health_score = MAX_HEALTH;
   }
   else
   {
-    this->health_score += REWARD_HEALTH;
+    health_score += REWARD_HEALTH;
 }*/
 }
 
@@ -154,7 +159,7 @@ void Entity::harm (Entity* attacker, uint8_t damage)
    }
   //Play sound
     if (sound_id > 0) {
-        playSound(sound_id, sound_pitch * rf(.90, 1.10), this->pos_X, this->pos_Y, prot->pos_X, prot->pos_Y);
+        playSound(sound_id, sound_pitch * rf(.90, 1.10), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
     }
 }
 
@@ -163,18 +168,25 @@ void Entity::loiter ()
     moveTowards(pos_X + ri(-3, 3), pos_Y + ri(-3, 3));
 }
 
+void Entity::step (StepDir direction, double x, double y, float dist)
+{
+    double step_X, step_Y;
+    targToVec(pos_X, pos_Y, x, y, step_X, step_Y);
+    moveTowards(pos_X + (step_X * dist), pos_Y + (step_Y * dist));
+}
+
 void Entity::think (bool is_nighttime)
 {
     switch (type) {
         case 0: //Villager
           //Find zombie to shoot at
             if(rb(.5)) {
-                for (uint16_t e = 0; e < entity.size(); ++e)
-                {
+                for (uint16_t e = 0; e < entity.size(); ++e) {
                     if (entity[e]->type != E_ZOMBIE || entity[e]->is_dead) { continue; }
                     if (eD_approx(pos_X, pos_Y, entity[e]->pos_X, entity[e]->pos_Y) < SHOOT_DISTANCE / (is_nighttime+1)) {
+                        step(dir_toward, entity[e]->pos_X, entity[e]->pos_Y, .01); //Face the belligerent
                         shoot(entity[e]);
-                        break;
+                        return;
                     }
                 }
             }
@@ -274,17 +286,17 @@ void Entity::animate ()
 void Entity::shoot (Entity* victim)
 {
     double dir_X, dir_Y;
-    targToVec(this->pos_X, this->pos_Y, victim->pos_X, victim->pos_Y, dir_X, dir_Y);
+    targToVec(pos_X, pos_Y, victim->pos_X, victim->pos_Y, dir_X, dir_Y);
     float dir_ang = vecToAng(dir_X, dir_Y);
-    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, prot->pos_X, prot->pos_Y);
-    this->rot = dir_ang;
-    projectile.push_back(new Projectile(this->pos_X, this->pos_Y, dir_ang, this));
+    playSound(AUD_SHOOT, rf(.75, 1.25), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
+    rot = dir_ang;
+    projectile.push_back(new Projectile(pos_X, pos_Y, dir_ang, this));
 }
 
 void Entity::shootDir ()
 {
-    playSound(AUD_SHOOT, rf(.75, 1.25), this->pos_X, this->pos_Y, prot->pos_X, prot->pos_Y);
-    projectile.push_back(new Projectile(this->pos_X, this->pos_Y, this->rot, this));
+    playSound(AUD_SHOOT, rf(.75, 1.25), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
+    projectile.push_back(new Projectile(pos_X, pos_Y, rot, this));
 }
 
 
