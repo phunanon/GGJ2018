@@ -1,42 +1,42 @@
 #include <SFML/Audio.hpp>
 
-#define SOUNDCHANNELS 8
+#define SOUNDCHANNELS 12
 #define EARSHOT 16
 
 //Create soundBuffer vector
-std::vector<sf::SoundBuffer*> soundBuffer;
-std::vector<sf::Sound*> soundChannel;
+std::vector<sf::SoundBuffer*> sound_buffers;
+std::vector<sf::Sound*> sound_channels;
 
-uint8_t sCh = 0;
+uint8_t curr_sch = 0;
 void playSound (uint8_t sound, float pitch, double orgX, double orgY, double protag_X, double protag_Y) {
   //Load buffer
-    soundChannel[sCh]->setBuffer(*soundBuffer[sound]);
+    sound_channels[curr_sch]->setBuffer(*sound_buffers[sound]);
   //Calculate volume, based on distance
     float dist = eD_approx(orgX, orgY, protag_X, protag_Y);
     if (dist > EARSHOT) { return; }
     uint8_t vol = ((pow(EARSHOT, 2) - pow(dist, 2)) / pow(EARSHOT, 2)) * 100;
-    soundChannel[sCh]->setVolume(vol);
+    sound_channels[curr_sch]->setVolume(vol);
   //Unique pitch
-    soundChannel[sCh]->setPitch(pitch);
+    sound_channels[curr_sch]->setPitch(pitch);
   //Play
-    soundChannel[sCh]->play();
+    sound_channels[curr_sch]->play();
   //Change channel
-    ++sCh;
-    if (sCh == SOUNDCHANNELS) { sCh = 0; }
+    ++curr_sch;
+    if (curr_sch == SOUNDCHANNELS) { curr_sch = 0; }
 }
 
 void initSound ()
 {
-  //Init soundBuffer
+  //Init sound_buffers
     std::vector<std::string> sounds = {"gun_shot.ogg", "women_hurt.ogg", "zombiehurt.ogg", "zombiedie.ogg"};
-    for (uint a = 0; a < 4; ++a) {
-        soundBuffer.push_back(new sf::SoundBuffer);
-        if (!soundBuffer[a]->loadFromFile("assets/" + sounds[a])) {
-            std::cout << "ERR: Couldn't load sound: assets/" + std::to_string(a) << std::endl;
+    for (uint b = 0; b < sounds.size(); ++b) {
+        sound_buffers.push_back(new sf::SoundBuffer);
+        if (!sound_buffers[b]->loadFromFile("assets/" + sounds[b])) {
+            std::cout << "ERR: Couldn't load sound: assets/" << sounds[b] << std::endl;
         }
     }
-    //Init sound channels
+    //Init sound_channels
     for (uint c = 0; c < SOUNDCHANNELS; ++c) {
-        soundChannel.push_back(new sf::Sound);
+        sound_channels.push_back(new sf::Sound);
     }
 }
