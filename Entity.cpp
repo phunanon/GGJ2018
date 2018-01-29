@@ -43,7 +43,7 @@ class Entity {
 
     uint8_t attack_timeout = 0;
     uint64_t targetted_at = 0; //Last time this Entity was targetted
-    int64_t prev_hurt = -100; //Last time this entity was hurt
+    uint64_t prev_hurt = 0; //Last time this entity was hurt
 
     float health_score = 255, speed = NORMAL_SPEED, power_score = 1;
 
