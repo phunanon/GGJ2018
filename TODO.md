@@ -2,36 +2,36 @@
 
 
 ## Must do
-M000 Test replacing euclidean distance scan for attack
-    M000.0 with unbiased square scan
-    M000.1 with fast-think random tile
-    M000.2 with ray-casting (see S000)
-M001 Fix sprite overlapping in display
-M002 Fix Villager animations looking backwards at certain angles
-M003 Sprite/Entity enums used exclusively over numbers
+- Test replacing euclidean distance scan for attack
+    - with unbiased square scan
+    - with fast-think random tile
+- Fix sprite overlapping in display
+- Fix Villager animations looking backwards at certain angles
+- Sprite/Entity enums used exclusively over numbers
+- Seperate audio into its own file
 
 ## Should do
-S000 Ensure Entities don't attack/shoot through solid sprites
-S001 test out protag random gun accuracy
-S002 Entity personalised sound pitches
-S003 background music
-S004 Put popular variables in global scope
-    S004.0 game_time
-    S004.1 txt_float
-    S004.2 *Tile
-S005 Zombie bite animation
-S006 Graphic health bar
-S007 Float texts for damage dealt
+- Ensure Entities don't attack/shoot through solid sprites
+- test out protag random gun accuracy
+- Entity personalised sound pitches
+- background music
+- Put popular variables in global scope
+    - game_time
+    - txt_float
+    - \*Tile
+- Zombie bite animation
+- Graphic health bar
+- Float texts for damage dealt
+- Make day longer than night again
 
 ## Could do
-C000 Animated foliage
-C001 Enable protag zombie mode
-C002 Fog
-C003 Crate destruction
+- Animated foliage
+- Enable protag zombie mode
+- Fog
+- Crate destruction
 
 
 ## Won't do
-W000 Crate push pressure
+- Crate push pressure
 
 ## Done
-

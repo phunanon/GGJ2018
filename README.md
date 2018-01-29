@@ -1,14 +1,19 @@
-# Infection: a game made for Global Game Jam 2018
+# Infection
+**Isometric zombie survival game for Linux**
+Continuation of a Global Games Jam 2018 [collaboration original](https://github.com/danielshare/GGJ2018).
+Written in C++/SFML.
+
+
 ## Prerequisites:
 
-`apt install libsfml-dev make`
+`sudo apt install libsfml-dev make`
+
 
 ## Installation:
 
-`git clone https://github.com/danielshare/GGJ2018.git`
-
-`cd GGJ2018`
-
-`make`
-
-`./GGJ2018`
+```
+git clone https://github.com/phunanon/Infection.git`
+cd Infection
+make
+./Infection.out
+```
