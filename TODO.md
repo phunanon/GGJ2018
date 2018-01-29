@@ -13,7 +13,6 @@
 - Make zombies attack when shot
 
 ## Should do
-- Projectiles hit tile above too (for headshots)
 - Add torch
 - Healing points (+ remove reward)
 - Ensure Entities don't attack/shoot through solid sprites

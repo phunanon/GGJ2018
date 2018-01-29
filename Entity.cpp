@@ -257,18 +257,18 @@ void Entity::animate ()
 
 void Entity::shoot (Entity* victim)
 {
-  double dir_X, dir_Y;
-  targToVec(this->pos_X, this->pos_Y, victim->pos_X, victim->pos_Y, dir_X, dir_Y);
-  float dir_ang = vecToAng(dir_X, dir_Y);
-  playSound(0, rf(.5, 1.5), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
-  this->rot = dir_ang;
-  projectile.push_back(new Projectile(this->pos_X, this->pos_Y, dir_ang, this));
+    double dir_X, dir_Y;
+    targToVec(this->pos_X, this->pos_Y, victim->pos_X, victim->pos_Y, dir_X, dir_Y);
+    float dir_ang = vecToAng(dir_X, dir_Y);
+    playSound(0, rf(.5, 1.5), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+    this->rot = dir_ang;
+    projectile.push_back(new Projectile(this->pos_X, this->pos_Y, dir_ang, this));
 }
 
 void Entity::shootDir ()
 {
-  playSound(0, rf(.5, 1.5), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
-  projectile.push_back(new Projectile(this->pos_X, this->pos_Y, this->rot, this));
+    playSound(0, rf(.5, 1.5), this->pos_X, this->pos_Y, entity[1]->pos_X, entity[1]->pos_Y);
+    projectile.push_back(new Projectile(this->pos_X, this->pos_Y, this->rot, this));
 }
 
 
@@ -276,28 +276,39 @@ void Entity::shootDir ()
 
 
 Projectile::Projectile(double pos_X, double pos_Y, float rot, Entity* shooter) {
-  this->pos_X = pos_X;
-  this->pos_Y = pos_Y;
-  this->shooter = shooter;
-  angToVec(rot, vel_X, vel_Y);
-  vel_X *= PROJECTILE_SPEED;
-  vel_Y *= PROJECTILE_SPEED;
+    this->pos_X = pos_X;
+    this->pos_Y = pos_Y;
+    this->shooter = shooter;
+    angToVec(rot, vel_X, vel_Y);
+    vel_X *= PROJECTILE_SPEED;
+    vel_Y *= PROJECTILE_SPEED;
 }
 
-void Projectile::move() {
-  pos_X += vel_X;
-  pos_Y += vel_Y;
-  if(isSolid(getSprite(pos_X, pos_Y))) {
-    had_hit = true;
-  } else {
-    uint16_t e = getMapEntity(uint16_t(pos_X), uint16_t(pos_Y));
-    Entity* here = entity[e];
-    if (here->index_in_array && here->type == E_ZOMBIE && !here->is_dead && here->index_in_array != shooter->index_in_array) {
-        if (uint16_t(here->pos_X) == uint16_t(pos_X) && uint16_t(here->pos_Y) == uint16_t(pos_Y)) {
-          had_hit = was_successful = true;
-          here->harm(PROJECTILE_DAMAGE);
-          shooter->reward();
+void Projectile::move()
+{
+    pos_X += vel_X;
+    pos_Y += vel_Y;
+    if (isSolid(getSprite(pos_X, pos_Y))) {
+        had_hit = true;
+    } else {
+      //Check if we've shot an Entity at this position
+        uint16_t e = getMapEntity(uint16_t(pos_X), uint16_t(pos_Y)); //Entity here
+        uint16_t e2 = getMapEntity(uint16_t(pos_X - 1), uint16_t(pos_Y + 1)); //Entity below
+        Entity* here = entity[e];
+        Entity* below = entity[e2];
+        if (here->index_in_array && here->type == E_ZOMBIE && !here->is_dead && here->index_in_array != shooter->index_in_array) {
+            if (uint16_t(here->pos_X) == uint16_t(pos_X) && uint16_t(here->pos_Y) == uint16_t(pos_Y)) {
+                had_hit = was_successful = true;
+                here->harm(PROJECTILE_DAMAGE);
+                shooter->reward();
+            }
+        }
+        if (below->index_in_array && below->type == E_ZOMBIE && !below->is_dead && below->index_in_array != shooter->index_in_array) {
+            if (uint16_t(below->pos_X) == uint16_t(pos_X - 1) && uint16_t(below->pos_Y) == uint16_t(pos_Y + 1)) {
+                had_hit = was_successful = true;
+                below->harm(PROJECTILE_DAMAGE);
+                shooter->reward();
+            }
         }
     }
-  }
 }
