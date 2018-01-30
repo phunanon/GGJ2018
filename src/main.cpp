@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp> //http://www.sfml-dev.org/tutorials/2.4
 #include <iostream> //Terminal
+#include <iomanip> //setprecision()
 
 #include "display.cpp"
 
@@ -183,6 +184,7 @@ int main ()
 
 
       //HUD
+        std::setprecision(1);
         txt_HUD.setString("Human: "+ std::to_string(humans) +", zombie: "+ std::to_string(zombies) +"; "+ std::to_string(uint8_t(float(zombies)/ents*100)) +"% infected");
         sf::sleep(sf::milliseconds(10));
         ++game_time;
