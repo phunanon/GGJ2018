@@ -156,7 +156,7 @@ int main ()
         prot->rot = prot->rot;
 
       //DISPLAY
-        doDISPLAY(prot, game_time, window, !(game_time % 50));
+        doDISPLAY(game_time, window, !(game_time % 50));
 
       //Entity & Projectile stuff
       //Entities

@@ -24,7 +24,7 @@ sf::CircleShape projectileTile (2);
 const uint16_t mm_size = WINDOW_W / 8; //Size of minimap on the screen
 const uint16_t mm_diag_width = sqrt(pow(mm_size, 2) + pow(mm_size, 2)); //Width of minimap rotated 45deg
 const uint32_t mm_len = MAP_A * 4;
-const uint8_t mm_crosshair = 2; //Half width of crosshair, in tiles
+const uint8_t mm_crosshair = 1; //Half width of crosshair, in tiles
 sf::Uint8* mm = new sf::Uint8[mm_len]; //Pixel data of the minimap
 sf::Texture mm_tex;
 sf::RectangleShape minimap (sf::Vector2f(MAP_W, MAP_H));
@@ -77,7 +77,7 @@ void getZombieTex (Entity* e, uint16_t &tex_X, uint16_t &tex_Y)
 
 
 
-void drawBiome (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uint16_t x, uint16_t y, double draw_X, double draw_Y)
+void drawBiome (uint32_t game_time, sf::RenderWindow &window, float day_l, uint16_t x, uint16_t y, double draw_X, double draw_Y)
 {
     uint32_t *mapPtr = &map[x][y];
   //Prepare biome for draw
@@ -93,7 +93,7 @@ void drawBiome (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uint
     switch (biome_code) {
         case B_STONE: //Stone
         {
-            uint8_t c = pi((x*y), 0, 20);
+            uint8_t c = pi(x*y, 0, 20);
             r = 235 + c;
             g = 235 + c;
             b = 235 + c;
@@ -111,9 +111,9 @@ void drawBiome (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uint
             break;
     }
     //Modulate for day/night
-    r *= daynight_colour(game_time, x, y);
-    g *= daynight_colour(game_time, x, y);
-    b *= daynight_colour(game_time, x, y);
+    r *= day_l;
+    g *= day_l;
+    b *= day_l;
     biomeTile.setColor(sf::Color(r, g, b));
     //Modulate if protag pos
     if (x == (int16_t)prot->pos_X && y == (int16_t)prot->pos_Y) {
@@ -123,7 +123,7 @@ void drawBiome (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uint
     window.draw(biomeTile);
 }
 
-void drawSprite (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uint16_t x, uint16_t y, double draw_X, double draw_Y)
+void drawSprite (uint32_t game_time, sf::RenderWindow &window, float day_l, uint16_t x, uint16_t y, double draw_X, double draw_Y)
 {
     uint32_t *mapPtr = &map[x][y];
     uint8_t sprite_code = getSprite(x, y);
@@ -144,27 +144,25 @@ void drawSprite (Entity* prot, uint32_t game_time, sf::RenderWindow &window, uin
             b = pi(x * y + 2, 200, 255) - l;
         }
         //Modulate for day/night
-        r *= daynight_colour(game_time, x, y);
-        g *= daynight_colour(game_time, x, y);
-        b *= daynight_colour(game_time, x, y);
+        r *= day_l;
+        g *= day_l;
+        b *= day_l;
         spriteTile.setColor(sf::Color(r, g, b));
         //Draw sprite
         window.draw(spriteTile);
     }
 }
 
-void doISOMETRIC (Entity* prot, uint32_t game_time, sf::RenderWindow &window, void (*drawer)(Entity* prot, uint32_t, sf::RenderWindow&, uint16_t, uint16_t, double, double))
+void doISOMETRIC (uint32_t game_time, sf::RenderWindow &window, void (*drawer)(uint32_t, sf::RenderWindow&, float, uint16_t, uint16_t, double, double))
 {
   //Calculate map crop (as map coords)
-    int16_t tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2, camera_W, camera_H;
+    int16_t tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2;
     tiles_X = (WINDOW_W / TILE_SCALE);
     tiles_Y = (WINDOW_H / TILE_SCALE);
-    camera_X1 = uint16_t(prot->pos_X) - tiles_X/2;
-    camera_Y1 = uint16_t(prot->pos_Y) - tiles_Y ;
+    camera_X1 = prot->pos_X - tiles_X/2;
+    camera_Y1 = prot->pos_Y - tiles_Y ;
     camera_X2 = camera_X1 + tiles_X + 2;
     camera_Y2 = camera_Y1 + tiles_Y*2 + 2;
-    camera_W = camera_X2 - camera_X1;
-    camera_H = camera_Y2 - camera_Y1;
   //Prepare isometric loop
     float p_X_d = decimal(prot->pos_X);
     float p_Y_d = decimal(prot->pos_Y);
@@ -180,8 +178,9 @@ void doISOMETRIC (Entity* prot, uint32_t game_time, sf::RenderWindow &window, vo
     for (int16_t y = camera_Y1; y < camera_Y2; ++y) {
       for (int16_t x = camera_X2; x >= camera_X1; --x) {
           if (draw_X > -TILE_W && draw_X < WINDOW_W + TILE_W && draw_Y > -TILE_H && draw_Y < WINDOW_H + TILE_H) {
+              float day_l = daynight_colour(game_time, x, y);
             //Prepare and call upon the argument drawer function
-              (*drawer)(prot, game_time, window, x, y, draw_X, draw_Y);
+              (*drawer)(game_time, window, day_l, x, y, draw_X, draw_Y);
           }
         //Move half left and half down
           draw_X -= TILE_W / 2;
@@ -195,19 +194,20 @@ void doISOMETRIC (Entity* prot, uint32_t game_time, sf::RenderWindow &window, vo
     }
 }
 
-void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
+void drawEntities (uint32_t game_time, sf::RenderWindow &window)
 {
-    double tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2, camera_W, camera_H;
-    tiles_X = (WINDOW_W / TILE_SCALE);
-    tiles_Y = (WINDOW_H / TILE_SCALE);
-    camera_X1 = prot->pos_X - tiles_X/2;
-    camera_Y1 = prot->pos_Y - tiles_Y ;
-    camera_X2 = camera_X1 + tiles_X + 2;
-    camera_Y2 = camera_Y1 + tiles_Y*2 + 2;
-    camera_W = camera_X2 - camera_X1;
-    camera_H = camera_Y2 - camera_Y1;
+    double camera_X1, camera_Y1, camera_X2, camera_Y2;
+    {
+        double tiles_X, tiles_Y;
+        tiles_X = (WINDOW_W / TILE_SCALE);
+        tiles_Y = (WINDOW_H / TILE_SCALE);
+        camera_X1 = prot->pos_X - tiles_X/2;
+        camera_Y1 = prot->pos_Y - tiles_Y ;
+        camera_X2 = camera_X1 + tiles_X + 2;
+        camera_Y2 = camera_Y1 + tiles_Y*2 + 2;
+    }
 
-    for (uint16_t e = 0; e < entity.size(); ++e) {
+    for (uint16_t e = 1, elen = entity.size(); e < elen; ++e) {
         double x = entity[e]->pos_X, y = entity[e]->pos_Y;
         if (x > camera_X1 && y > camera_Y1 && x < camera_X2 && y < camera_Y2) {
             double draw_X, draw_Y;
@@ -271,19 +271,20 @@ void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
     }
 }
 
-void drawProjectiles (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
+void drawProjectiles (uint32_t game_time, sf::RenderWindow &window)
 {
-    double tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2, camera_W, camera_H;
-    tiles_X = (WINDOW_W / TILE_SCALE);
-    tiles_Y = (WINDOW_H / TILE_SCALE);
-    camera_X1 = prot->pos_X - tiles_X/2;
-    camera_Y1 = prot->pos_Y - tiles_Y ;
-    camera_X2 = camera_X1 + tiles_X + 2;
-    camera_Y2 = camera_Y1 + tiles_Y*2 + 2;
-    camera_W = camera_X2 - camera_X1;
-    camera_H = camera_Y2 - camera_Y1;
+    double camera_X1, camera_Y1, camera_X2, camera_Y2;
+    {
+        double tiles_X, tiles_Y;
+        tiles_X = (WINDOW_W / TILE_SCALE);
+        tiles_Y = (WINDOW_H / TILE_SCALE);
+        camera_X1 = prot->pos_X - tiles_X/2;
+        camera_Y1 = prot->pos_Y - tiles_Y ;
+        camera_X2 = camera_X1 + tiles_X + 2;
+        camera_Y2 = camera_Y1 + tiles_Y*2 + 2;
+    }
 
-    for (uint16_t p = 0; p < projectile.size(); ++p) {
+    for (uint16_t p = 0, plen = projectile.size(); p < plen; ++p) {
         double x = projectile[p]->pos_X, y = projectile[p]->pos_Y;
         if (x > camera_X1 && y > camera_Y1 && x < camera_X2 && y < camera_Y2) {
             double draw_X, draw_Y;
@@ -314,15 +315,15 @@ void drawProjectiles (Entity* prot, uint32_t game_time, sf::RenderWindow &window
     }
 }
 
-void doDISPLAY (Entity* prot, uint32_t game_time, sf::RenderWindow &window, bool is_lazy = false)
+void doDISPLAY (uint32_t game_time, sf::RenderWindow &window, bool is_lazy = false)
 {
     window.clear(sf::Color(255, 255, 255));
 
-    doISOMETRIC(prot, game_time, window, drawBiome);
-    doISOMETRIC(prot, game_time, window, drawSprite);
+    doISOMETRIC(game_time, window, drawBiome);
+    doISOMETRIC(game_time, window, drawSprite);
 
-    drawEntities(prot, game_time, window);
-    drawProjectiles(prot, game_time, window);
+    drawEntities(game_time, window);
+    drawProjectiles(game_time, window);
 
     window.draw(txt_HUD);
 
