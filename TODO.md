@@ -12,7 +12,6 @@
 - Slide instead of stop on Entity/Sprite collision
 
 ## Should do
-- Healing points (+ remove reward)
 - Add killcount floating text
 - test out protag random gun accuracy
 - background music
@@ -23,6 +22,7 @@
 - Blood animation when attacked by zombie
 - Enable protag zombie mode
 - Fix Villager animations looking backwards at certain angles
+- Mouse crosshair
 
 ## Could do
 - Animated foliage
@@ -34,8 +34,8 @@
 - Comb through code and conform to syntax style
 - More variation in sounds
 - Change protag indicator to above-head arrow
-- Mouse crosshair
-
+- Pause
+- Zombies start in one part of the map and spread, protag near this
 
 ## Won't do
 - Crate push pressure

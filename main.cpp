@@ -159,9 +159,10 @@ int main ()
         doDISPLAY(prot, game_time, window, !(game_time % 50));
 
       //Entity & Projectile stuff
+      //Entities
         bool is_nighttime = sky_darkness < .4;
         uint16_t ents = 0, humans = 0, zombies = 0;
-        for (uint16_t e = 2; e < entity.size(); ++e) {
+        for (uint16_t e = 2, elen = entity.size(); e < elen; ++e) {
             Entity* ent = entity[e];
             ent->animate();
             if (ent->is_dead) { continue; }
@@ -172,7 +173,14 @@ int main ()
             if (ent->type == E_VILLAGER) { ++humans; }
              else if (ent->type == E_ZOMBIE) { ++zombies; }
         }
-        for (uint16_t p = 0; p < projectile.size(); ++p) {
+        //Heal ALL Villagers if they're near a campfire
+        for (uint16_t e = 1, elen = entity.size(); e < elen; ++e) {
+            if (entity[e]->type != E_VILLAGER) { continue; }
+            float heal_amount = getLux(entity[e]->pos_X, entity[e]->pos_Y) * LUX_HEAL;
+            if (heal_amount > 0) { entity[e]->heal(heal_amount); }
+        }
+      //Projectiles
+        for (uint16_t p = 0, plen = projectile.size(); p < plen; ++p) {
             Projectile* proj = projectile[p];
             proj->opacity -= .01;
             if (proj->opacity <= 0) {

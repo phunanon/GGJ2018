@@ -18,8 +18,9 @@ const uint8_t LASHOUT_INTERVAL = 20;
 const uint8_t MAX_HEALTH = 255;
 const float NORMAL_SPEED = .02, ATTACK_SPEED = .06;
 const uint8_t PROJECTILE_DAMAGE = 12;
+const uint8_t ATTACK_DAMAGE = 45;
 const float PROJECTILE_SPEED = .25;
-const float REWARD_HEALTH = 10;
+const float LUX_HEAL = .2;
 const uint8_t SOUND_INTERVAL = 40;
 
 enum StepDir {
@@ -45,7 +46,7 @@ class Entity {
     uint64_t targetted_at = 0; //Last time this Entity was targetted
     uint64_t prev_hurt = 0; //Last time this entity was hurt
 
-    float health_score = MAX_HEALTH, speed = NORMAL_SPEED, power_score = 20;
+    float health_score = MAX_HEALTH, speed = NORMAL_SPEED, power_score = ATTACK_DAMAGE;
 
     Entity (uint8_t, double, double);
     Entity (); //For dummy entity
@@ -55,10 +56,10 @@ class Entity {
     bool tryDir (float, float);
     void move ();
     void harm (Entity*, uint8_t);
+    void heal (float);
     void animate ();
     void shoot(Entity*);
     void shootDir();
-    void reward();
 
   private:
       void loiter ();
@@ -107,25 +108,12 @@ void Entity::attack (Entity* who)
     attack_timeout = 4;
 }
 
-void Entity::reward()
-{/*
-  if(health_score + REWARD_HEALTH > MAX_HEALTH)
-  {
-    health_score = MAX_HEALTH;
-  }
-  else
-  {
-    health_score += REWARD_HEALTH;
-}*/
-}
-
 void Entity::lashOut ()
 {
     if (last_lashout + LASHOUT_INTERVAL < game_time) {
         last_lashout = game_time;
         if (target->type != E_ZOMBIE) {
             target->harm(this, power_score);
-            reward();
         } else {
             attack_timeout = 0;
         }
@@ -165,6 +153,15 @@ void Entity::harm (Entity* attacker, uint8_t damage)
   //Play sound
     if (sound_id > 0) {
         playSound(sound_id, sound_pitch * rf(.90, 1.10), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
+    }
+}
+
+void Entity::heal (float amount)
+{
+    if (health_score + amount < MAX_HEALTH) {
+        health_score += amount;
+    } else {
+        health_score = MAX_HEALTH;
     }
 }
 
@@ -301,7 +298,7 @@ void Entity::shoot (Entity* victim)
 void Entity::shootDir ()
 {
     playSound(AUD_SHOOT, rf(.75, 1.25), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
-    projectile.push_back(new Projectile(pos_X, pos_Y, rot, this));
+    projectile.push_back(new Projectile(pos_X + .25, pos_Y + .25, rot, this));
 }
 
 
@@ -334,14 +331,14 @@ void Projectile::move ()
             if (uint16_t(here->pos_X) == uint16_t(pos_X) && uint16_t(here->pos_Y) == uint16_t(pos_Y)) {
                 had_hit = was_successful = true;
                 here->harm(shooter, PROJECTILE_DAMAGE);
-                shooter->reward();
             }
         }
-        if (below->index_in_array && below->type == E_ZOMBIE && !below->is_dead && below->index_in_array != shooter->index_in_array) {
-            if (uint16_t(below->pos_X) == uint16_t(pos_X - 1) && uint16_t(below->pos_Y) == uint16_t(pos_Y + 1)) {
-                had_hit = was_successful = true;
-                below->harm(shooter, PROJECTILE_DAMAGE);
-                shooter->reward();
+        if (!isSolid(getSprite(pos_X - 1, pos_Y + 1))) {
+            if (below->index_in_array && below->type == E_ZOMBIE && !below->is_dead && below->index_in_array != shooter->index_in_array) {
+                if (uint16_t(below->pos_X) == uint16_t(pos_X - 1) && uint16_t(below->pos_Y) == uint16_t(pos_Y + 1)) {
+                    had_hit = was_successful = true;
+                    below->harm(shooter, PROJECTILE_DAMAGE);
+                }
             }
         }
     }
