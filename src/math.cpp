@@ -1,8 +1,4 @@
-#ifndef _MATH_INCLUDED
-#define _MATH_INCLUDED
-
-
-#include <random> //For random generation
+#include "math.hpp"
 
 //===================================
 //For optimised/approx code
@@ -21,7 +17,7 @@ float sqrt_approx (float z)
     return u.f;
 }
 
-inline float eD_approx (float x1, float y1, float x2, float y2) //Calculate the distance between two points, as the crow flies
+float eD_approx (float x1, float y1, float x2, float y2) //Calculate the distance between two points, as the crow flies
 {
     return sqrt_approx(pow((x2 - x1), 2) + pow((y2 - y1), 2));
 }
@@ -42,7 +38,7 @@ float pf (uint seed) //'Predictable' patterned random float (doesn't work)
 //GENERATORS
 //===================================
 std::mt19937 gen(time(NULL));
-bool rb (float dist = 0.5f) //Random boolean
+bool rb (float dist) //Random boolean
 {
     std::bernoulli_distribution b_dist(dist); //Random boolean https://msdn.microsoft.com/en-us/library/bb982365.aspx
     return b_dist(gen);
@@ -125,7 +121,7 @@ float decimal (float num)
 }
 
 //https://stackoverflow.com/a/16606128/7000138
-std::string to_string_with_precision (double val, int n = 2)
+std::string to_string_with_precision (double val, int n)
 {
     double test = val;
     while (test > 10) {
@@ -136,6 +132,3 @@ std::string to_string_with_precision (double val, int n = 2)
     out << std::setprecision(n) << val;
     return out.str();
 }
-
-
-#endif

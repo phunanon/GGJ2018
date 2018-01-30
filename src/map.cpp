@@ -1,6 +1,6 @@
 #include <string.h> //For memset()
 
-#include "math.cpp"
+#include "math.hpp"
 
 #define B_WATER 0
 #define B_STONE 1

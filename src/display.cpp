@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp> //For SFML graphics
 #include "map.cpp"
 #include "Entity.cpp"
+#include "math.hpp"
 
 
 const uint8_t TILE_SCALE = 32;

@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp> //http://www.sfml-dev.org/tutorials/2.4
 #include <iostream> //Terminal
-#include <iomanip> //setprecision()
 
 #include "display.cpp"
+#include "math.hpp"
 
 const uint16_t RELOAD_TIME = 10;
 
