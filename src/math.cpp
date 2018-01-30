@@ -124,5 +124,18 @@ float decimal (float num)
     return num - (long)num;
 }
 
+//https://stackoverflow.com/a/16606128/7000138
+std::string to_string_with_precision (double val, int n = 2)
+{
+    double test = val;
+    while (test > 10) {
+        test /= 10;
+        ++n;
+    }
+    std::ostringstream out;
+    out << std::setprecision(n) << val;
+    return out.str();
+}
+
 
 #endif
