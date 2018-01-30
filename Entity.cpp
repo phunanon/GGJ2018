@@ -12,8 +12,8 @@ const uint8_t ENTITY_W = 32, ENTITY_H = 64;
 const uint16_t GEN_VILLAGERS = 1024;
 const uint16_t GEN_ZOMBIES = 256;
 const float ANI_INTERVAL = 2;
-const uint8_t SHOOT_DISTANCE = 16;
-const uint8_t ATTACK_DISTANCE = 16;
+const uint8_t SHOOT_DISTANCE = 8;
+const uint8_t ATTACK_DISTANCE = 6;
 const uint8_t LASHOUT_INTERVAL = 20;
 const uint8_t MAX_HEALTH = 255;
 const float NORMAL_SPEED = .02, ATTACK_SPEED = .06;
@@ -33,7 +33,7 @@ std::vector<Projectile*> projectile = std::vector<Projectile*>();
 
 class Entity {
   public:
-    uint8_t type; // 0 Villager, 1 Zombie
+    uint8_t type = 255; // 0 Villager, 1 Zombie
     uint16_t index_in_array;
     bool is_dead = false;
 
@@ -168,6 +168,7 @@ void Entity::heal (float amount)
 void Entity::loiter ()
 {
     moveTowards(pos_X + ri(-3, 3), pos_Y + ri(-3, 3));
+    attack_timeout = 0;
 }
 
 void Entity::step (StepDir direction, double x, double y, float dist)
@@ -177,19 +178,39 @@ void Entity::step (StepDir direction, double x, double y, float dist)
     moveTowards(pos_X + (step_X * dist), pos_Y + (step_Y * dist));
 }
 
+bool enemyIsHere (Entity* here, uint16_t expected_x, uint16_t expected_y)
+{
+    if (here->index_in_array && !here->is_dead) {
+        if (uint16_t(here->pos_X) == uint16_t(expected_x) && uint16_t(here->pos_Y) == uint16_t(expected_y)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+uint16_t findEntity (uint8_t type, uint16_t mid_X, uint16_t mid_Y, uint8_t radius)
+{
+    for (uint16_t y = mid_Y - radius, ylen = mid_Y + radius; y < ylen; ++y) {
+        for (uint16_t x = mid_X - radius, xlen = mid_X + radius; x < xlen; ++x) {
+            if (x == mid_X || y == mid_Y) { continue; }
+            uint16_t test = getMapEntity(x, y);
+            if (enemyIsHere(entity[test], x, y) && entity[test]->type == type) { return test; }
+        }
+    }
+    return 0;
+}
+
 void Entity::think (bool is_nighttime)
 {
     switch (type) {
         case 0: //Villager
           //Find zombie to shoot at
             if(rb(.5)) {
-                for (uint16_t e = 0; e < entity.size(); ++e) {
-                    if (entity[e]->type != E_ZOMBIE || entity[e]->is_dead) { continue; }
-                    if (eD_approx(pos_X, pos_Y, entity[e]->pos_X, entity[e]->pos_Y) < SHOOT_DISTANCE / (is_nighttime+1)) {
-                        step(dir_toward, entity[e]->pos_X, entity[e]->pos_Y, .01); //Face the belligerent
-                        shoot(entity[e]);
-                        return;
-                    }
+                uint16_t targ_id = findEntity(E_ZOMBIE, pos_X, pos_Y, SHOOT_DISTANCE / (is_nighttime+1));
+                if (targ_id) {
+                    step(dir_toward, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, .01); //Face the belligerent
+                    shoot(entity[targ_id]);
+                    return;
                 }
             }
           //Loiter
@@ -204,11 +225,10 @@ void Entity::think (bool is_nighttime)
                 }
             } else {
               //Find a Villager to attack
-                for (uint16_t e = 0; e < entity.size(); ++e) {
-                    if (entity[e]->type != E_VILLAGER || entity[e]->is_dead) { continue; }
-                    if (eD_approx(pos_X, pos_Y, entity[e]->pos_X, entity[e]->pos_Y) < ATTACK_DISTANCE * (is_nighttime+1)) {
-                        if (entity[e]->targetted_at + 50 > game_time) { continue; }
-                        attack(entity[e]);
+                uint16_t targ_id = findEntity(E_VILLAGER, pos_X, pos_Y, ATTACK_DISTANCE * (is_nighttime+1));
+                if (targ_id) {
+                    if (entity[targ_id]->targetted_at + 50 < game_time) {
+                        attack(entity[targ_id]);
                         return;
                     }
                 }
@@ -327,18 +347,14 @@ void Projectile::move ()
         uint16_t e2 = getMapEntity(uint16_t(pos_X - 1), uint16_t(pos_Y + 1)); //Entity below
         Entity* here = entity[e];
         Entity* below = entity[e2];
-        if (here->index_in_array && here->type == E_ZOMBIE && !here->is_dead && here->index_in_array != shooter->index_in_array) {
-            if (uint16_t(here->pos_X) == uint16_t(pos_X) && uint16_t(here->pos_Y) == uint16_t(pos_Y)) {
-                had_hit = was_successful = true;
-                here->harm(shooter, PROJECTILE_DAMAGE);
-            }
+        if (enemyIsHere(here, pos_X, pos_Y) && here->type == E_ZOMBIE && here->index_in_array != shooter->index_in_array) {
+            had_hit = was_successful = true;
+            here->harm(shooter, PROJECTILE_DAMAGE);
         }
         if (!isSolid(getSprite(pos_X - 1, pos_Y + 1))) {
-            if (below->index_in_array && below->type == E_ZOMBIE && !below->is_dead && below->index_in_array != shooter->index_in_array) {
-                if (uint16_t(below->pos_X) == uint16_t(pos_X - 1) && uint16_t(below->pos_Y) == uint16_t(pos_Y + 1)) {
-                    had_hit = was_successful = true;
-                    below->harm(shooter, PROJECTILE_DAMAGE);
-                }
+            if (enemyIsHere(below, pos_X - 1, pos_Y + 1) && below->type == E_ZOMBIE && below->index_in_array != shooter->index_in_array) {
+                had_hit = was_successful = true;
+                below->harm(shooter, PROJECTILE_DAMAGE);
             }
         }
     }
