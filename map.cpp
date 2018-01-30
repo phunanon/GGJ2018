@@ -8,6 +8,8 @@
 #define B_SAND  3
 
 #define S_CAMPFIRE 3
+#define S_TREE     4
+#define S_BUSH     5
 
 const uint16_t MAP_W = 320, MAP_H = 320;
 const uint32_t MAP_A = MAP_W * MAP_H;
@@ -231,11 +233,11 @@ void genMap ()
             }
           //Add random foliage
             else if (biome_code == B_GRASS) {
-                if (rb(0.025)) {
-                    setSprite(x, y, 4);
+                if (rb(0.02)) {
+                    setSprite(x, y, S_TREE);
                     //setAnimated(x, y, true);
-                } else if (rb(0.05)) {
-                    setSprite(x, y, 5);
+                } else if (rb(0.01)) {
+                    setSprite(x, y, S_BUSH);
                     //setAnimated(x, y, true);
                 }
             }
@@ -264,13 +266,13 @@ void growMap (uint16_t grow_speed, uint16_t death_speed)
       //If it's growable, grow it
         uint8_t spread = 0;
         switch (sprite_code) {
-            case 4: spread = 1 * rb(.6); break;
-            case 5: spread = 2 * rb(1); break;
+            case S_TREE: spread = 1 * rb(.3); break;
+            case S_BUSH: spread = 2.5 * rb(.8); break;
         }
-        if (spread && getBiome(grow_X, grow_Y) == B_GRASS) {
+        if (spread) {
             grow_X += ri(-spread, spread);
             grow_Y += ri(-spread, spread);
-            if (!getSprite(grow_X, grow_Y)) {
+            if (!getSprite(grow_X, grow_Y) && getBiome(grow_X, grow_Y) == B_GRASS) {
                 setSprite(grow_X, grow_Y, sprite_code);
             }
         }
@@ -285,7 +287,7 @@ void growMap (uint16_t grow_speed, uint16_t death_speed)
         bool to_kill = 0;
         switch (sprite_code) {
             case 4: to_kill = rb(.3); break;
-            case 5: to_kill = rb(1); break;
+            case 5: to_kill = rb(.8); break;
         }
         if (to_kill) {
             setSprite(grow_X, grow_Y, 0);
