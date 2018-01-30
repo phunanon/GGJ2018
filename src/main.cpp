@@ -27,22 +27,11 @@ int main ()
     sf::Image zombieTexImg;
     sf::Texture zombieTexture;
   //Load textures/fonts
-    if (!fnt_arial.loadFromFile("assets/arial.ttf"))
-    {
-      std::cout << "Couldn't load assets/arial.ttf" << std::endl;
-    }
-    if (!biomeTexImg.loadFromFile("assets/biomes.png")) {
-        std::cout << "Couldn't load assets/biomes.png" << std::endl;
-    }
-    if (!spriteTexImg.loadFromFile("assets/sprites.png")) {
-        std::cout << "Couldn't load assets/sprites.png" << std::endl;
-    }
-    if (!villagerTexImg.loadFromFile("assets/villager.png")) {
-        std::cout << "Couldn't load assets/villager.png" << std::endl;
-    }
-    if (!zombieTexImg.loadFromFile("assets/zombie.png")) {
-        std::cout << "Couldn't load assets/zombie.png" << std::endl;
-    }
+    fnt_arial.loadFromFile("assets/arial.ttf");
+    biomeTexImg.loadFromFile("assets/biomes.png");
+    spriteTexImg.loadFromFile("assets/sprites.png");
+    villagerTexImg.loadFromFile("assets/villager.png");
+    zombieTexImg.loadFromFile("assets/zombie.png");
 
 
     txt_float.setFont(fnt_arial);

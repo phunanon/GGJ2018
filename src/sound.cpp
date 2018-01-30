@@ -36,9 +36,7 @@ void initSound ()
     std::vector<std::string> sounds = {"gun_shot.ogg", "women_hurt.ogg", "zombiehurt.ogg", "zombiedie.ogg"};
     for (uint b = 0; b < sounds.size(); ++b) {
         sound_buffers.push_back(new sf::SoundBuffer);
-        if (!sound_buffers[b]->loadFromFile("assets/" + sounds[b])) {
-            std::cout << "ERR: Couldn't load sound: assets/" << sounds[b] << std::endl;
-        }
+        sound_buffers[b]->loadFromFile("assets/" + sounds[b]);
     }
     //Init sound_channels
     for (uint c = 0; c < SOUNDCHANNELS; ++c) {
