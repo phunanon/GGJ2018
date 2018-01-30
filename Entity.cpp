@@ -10,7 +10,7 @@ Entity* prot; //Protagonist
 
 const uint8_t ENTITY_W = 32, ENTITY_H = 64;
 const uint16_t GEN_VILLAGERS = 1024;
-const uint16_t GEN_ZOMBIES = 256;
+const uint16_t GEN_ZOMBIES = 64;
 const float ANI_INTERVAL = 2;
 const uint8_t SHOOT_DISTANCE = 8;
 const uint8_t ATTACK_DISTANCE = 6;
@@ -47,6 +47,7 @@ class Entity {
     uint64_t prev_hurt = 0; //Last time this entity was hurt
 
     float health_score = MAX_HEALTH, speed = NORMAL_SPEED, power_score = ATTACK_DAMAGE;
+    uint16_t kill_count = 0;
 
     Entity (uint8_t, double, double);
     Entity (); //For dummy entity
@@ -122,6 +123,7 @@ void Entity::lashOut ()
 
 void Entity::harm (Entity* attacker, uint8_t damage)
 {
+    bool is_fatal = false;
     int8_t sound_id = -1;
   //Select sound
     if (prev_hurt + SOUND_INTERVAL < game_time) {
@@ -138,12 +140,15 @@ void Entity::harm (Entity* attacker, uint8_t damage)
         if (type == E_VILLAGER) {
             type = E_ZOMBIE;
             health_score = MAX_HEALTH;
+            is_fatal = true;
+            kill_count = 0;
         } else if (type == E_ZOMBIE) {
             sound_id = AUD_ZOMBIE_DIE;
             is_dead = true;
             health_score = 0;
             frame = 0;
             speed = NORMAL_SPEED*3; //For the animation
+            is_fatal = true;
         }
     }
   //If a zombie, attack the attacker
@@ -154,6 +159,8 @@ void Entity::harm (Entity* attacker, uint8_t damage)
     if (sound_id > 0) {
         playSound(sound_id, sound_pitch * rf(.90, 1.10), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
     }
+  //Inc kill_count
+    attacker->kill_count += is_fatal;
 }
 
 void Entity::heal (float amount)

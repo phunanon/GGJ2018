@@ -12,7 +12,6 @@
 - Slide instead of stop on Entity/Sprite collision
 
 ## Should do
-- Add killcount floating text
 - test out protag random gun accuracy
 - background music
 - Zombie bite animation

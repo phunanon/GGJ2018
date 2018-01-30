@@ -46,11 +46,11 @@ int main ()
 
 
     txt_float.setFont(fnt_arial);
-    txt_float.setCharacterSize(12);
+    txt_float.setCharacterSize(8);
+    txt_float.setFillColor(sf::Color::Black);
     txt_HUD.setFont(fnt_arial);
     txt_HUD.setCharacterSize(20);
     txt_HUD.setPosition(sf::Vector2f(4, WINDOW_H - 24));
-    txt_float.setFillColor(sf::Color::White);
     biomeTexture.loadFromImage(biomeTexImg);
     biomeTile.setTexture(biomeTexture);
     biomeTexture.setSmooth(false);

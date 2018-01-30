@@ -164,13 +164,16 @@ void doISOMETRIC (uint32_t game_time, sf::RenderWindow &window, void (*drawer)(u
     camera_X2 = camera_X1 + tiles_X + 2;
     camera_Y2 = camera_Y1 + tiles_Y*2 + 2;
   //Prepare isometric loop
-    float p_X_d = decimal(prot->pos_X);
-    float p_Y_d = decimal(prot->pos_Y);
-    float p_X_D = 1 - p_X_d;
-    float p_Y_D = 1 - p_Y_d;
-    float protag_offset_X = ( (p_Y_D * TILE_H) + (p_X_D * (TILE_W/2)) );     //
-    float protag_offset_Y = ( (p_Y_D * (TILE_H/2)) + (p_X_d * (TILE_H/2)) ); // Calculate protag decimal offset
-    double draw_X = protag_offset_X, draw_Y = -(TILE_H * (tiles_Y / 2)) + protag_offset_Y;
+    double draw_X, draw_Y;
+    {
+        float p_X_d = decimal(prot->pos_X);
+        float p_Y_d = decimal(prot->pos_Y);
+        float p_X_D = 1 - p_X_d;
+        float p_Y_D = 1 - p_Y_d;
+        float protag_offset_X = ( (p_Y_D * TILE_H) + (p_X_D * (TILE_W/2)) );     //
+        float protag_offset_Y = ( (p_Y_D * (TILE_H/2)) + (p_X_d * (TILE_H/2)) ); // Calculate protag decimal offset
+        draw_X = protag_offset_X, draw_Y = -(TILE_H * (tiles_Y / 2)) + protag_offset_Y;
+    }
     draw_X += TILE_W * (tiles_X/4);
     draw_Y -= TILE_H*2;
     double start_draw_X = draw_X, start_draw_Y = draw_Y;
@@ -214,15 +217,17 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
             draw_X = (x - camera_X1); //Tiles across X
             draw_Y = (y - camera_Y1); //Tiles across Y
             //In order to position correctly:
-            double e_offset_X = 0, e_offset_Y = 0;
-            //First go right and down according to the Y coord
-            e_offset_X += (draw_Y * (TILE_W/2));
-            e_offset_Y += (draw_Y * (TILE_H/2));
-            //Then go left and down according to the X coord
-            e_offset_X -= ((16 - draw_X) * (TILE_W/2));
-            e_offset_Y += ((16 - draw_X) * (TILE_H/2));
-            draw_X = e_offset_X - ENTITY_W/2;
-            draw_Y = e_offset_Y - ENTITY_H;
+            {
+                double e_offset_X = 0, e_offset_Y = 0;
+                //First go right and down according to the Y coord
+                e_offset_X += (draw_Y * (TILE_W/2));
+                e_offset_Y += (draw_Y * (TILE_H/2));
+                //Then go left and down according to the X coord
+                e_offset_X -= ((16 - draw_X) * (TILE_W/2));
+                e_offset_Y += ((16 - draw_X) * (TILE_H/2));
+                draw_X = e_offset_X - ENTITY_W/2;
+                draw_Y = e_offset_Y - ENTITY_H;
+            }
             uint16_t tex_X, tex_Y;
             //Modulation
             uint8_t r = 255, g = 255, b = 255;
@@ -256,16 +261,20 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
                     window.draw(zombieTile);
                     break;
             }
-          //Draw health bar
             if (!entity[e]->is_dead) {
+              //Draw health bar
                 healthBar.setPosition(sf::Vector2f(draw_X, draw_Y));
                 float health_bar_len = ((entity[e]->health_score) / MAX_HEALTH) * ENTITY_W;
-                healthBar.setSize(sf::Vector2f(health_bar_len, 4));
+                healthBar.setSize(sf::Vector2f(health_bar_len, 5));
                 r = 255 * (1 - (health_bar_len / ENTITY_W)) * day_l;
                 g = 255 * (health_bar_len / ENTITY_W) * day_l;
                 b = 0;
                 healthBar.setFillColor(sf::Color(r, g, b));
                 window.draw(healthBar);
+              //Draw kill_count
+                txt_float.setPosition(sf::Vector2f(draw_X + ENTITY_W / 2.3, draw_Y - 3));
+                txt_float.setString(std::to_string(entity[e]->kill_count));
+                window.draw(txt_float);
             }
         }
     }
