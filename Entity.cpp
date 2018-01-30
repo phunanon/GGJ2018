@@ -191,7 +191,7 @@ bool enemyIsHere (Entity* here, uint16_t expected_x, uint16_t expected_y)
 uint16_t findEntity (uint8_t type, uint16_t mid_X, uint16_t mid_Y, uint8_t radius)
 {
     for (uint16_t y = mid_Y - radius, ylen = mid_Y + radius; y < ylen; ++y) {
-        for (uint16_t x = mid_X - radius, xlen = mid_X + radius; x < xlen; ++x) {
+        for (uint16_t x = mid_X - radius, xlen = mid_X + radius; x < xlen; x += 2) { //+=2 to dirty remove bias
             if (x == mid_X || y == mid_Y) { continue; }
             uint16_t test = getMapEntity(x, y);
             if (enemyIsHere(entity[test], x, y) && entity[test]->type == type) { return test; }
