@@ -7,9 +7,10 @@
 - Fix sprite overlapping in display
 - Sprite/Entity enums used exclusively over numbers
 - Seperate audio into its own file
-- Ensure better that Entities can't pass through Sprites
+- Ensure better that Entities can't pass through gaps between Sprites (use two-prong detection)
 - Ensure Entities don't attack/shoot through solid sprites
 - Slide instead of stop on Entity/Sprite collision
+- Create proper Makefile and Headers
 
 ## Should do
 - test out protag random gun accuracy
@@ -24,6 +25,7 @@
 - Mouse crosshair
 
 ## Could do
+- Hard-solve findEntity() bias
 - Animated foliage
 - Protag torch
 - Fog
