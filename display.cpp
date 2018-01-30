@@ -227,9 +227,10 @@ void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
             //Modulation
             uint8_t r = 255, g = 255, b = 255;
             //Modulate for day/night
-            r *= daynight_colour(game_time, x, y);
-            g *= daynight_colour(game_time, x, y);
-            b *= daynight_colour(game_time, x, y);
+            float day_l = daynight_colour(game_time, x, y);
+            r *= day_l;
+            g *= day_l;
+            b *= day_l;
             //Modulate for if hurt
             if (entity[e]->prev_hurt + HURT_ANI_LEN > game_time) {
                 if (entity[e]->type == E_VILLAGER) { r = 255; g /= 2; b /= 2; }
@@ -260,8 +261,8 @@ void drawEntities (Entity* prot, uint32_t game_time, sf::RenderWindow &window)
                 healthBar.setPosition(sf::Vector2f(draw_X, draw_Y));
                 float health_bar_len = ((entity[e]->health_score) / MAX_HEALTH) * ENTITY_W;
                 healthBar.setSize(sf::Vector2f(health_bar_len, 4));
-                r = 255 * (1 - (health_bar_len / ENTITY_W));
-                g = 255 * (health_bar_len / ENTITY_W);
+                r = 255 * (1 - (health_bar_len / ENTITY_W)) * day_l;
+                g = 255 * (health_bar_len / ENTITY_W) * day_l;
                 b = 0;
                 healthBar.setFillColor(sf::Color(r, g, b));
                 window.draw(healthBar);
