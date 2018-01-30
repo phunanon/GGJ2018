@@ -141,6 +141,7 @@ int main ()
         if (prot->tryDir(dir_X, dir_Y)) {
             prot->pos_X = new_X;
             prot->pos_Y = new_Y;
+            setMapEntity(prot->pos_X, prot->pos_Y, 1);
         }
         prot->rot = prot->rot;
 
