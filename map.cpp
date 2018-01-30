@@ -9,21 +9,21 @@
 
 #define S_CAMPFIRE 3
 
-const uint16_t MAP_W = 488, MAP_H = 488;
+const uint16_t MAP_W = 320, MAP_H = 320;
 const uint32_t MAP_A = MAP_W * MAP_H;
                             //eeeeeeee eeeeeeee     llaf ffssssbb
 uint32_t map[MAP_W][MAP_H]; //00000000 00000000 00000000 00000000 - 0000000000000000 entity map id, 0000 RESERVED, 00 luminosity, 0 animated, 000 frame, 0000 sprite, 00 biome
 uint64_t game_time = 100;
 
 //Constants
-const uint8_t GEN_ISLANDS = 5;
-const uint16_t GEN_ISLAND_RAD_MIN = 48;
+const uint8_t GEN_ISLANDS = 4;
+const uint8_t GEN_ISLAND_RAD_MIN = 32;
 const uint16_t GEN_ISLAND_RAD_MAX = 64;
 const uint8_t GEN_ISLAND_RES = 4; //'resolution' of an island - how many blobs make it up
-const uint8_t GEN_VILLAGES = 64;
-const uint16_t GEN_VILLAGE_RAD_MIN = 8;
-const uint16_t GEN_VILLAGE_RAD_MAX = 16;
-const uint16_t GEN_GROW_MAP = 4096;
+const uint8_t GEN_VILLAGES = 32;
+const uint8_t GEN_VILLAGE_RAD_MIN = 8;
+const uint16_t GEN_VILLAGE_RAD_MAX = 12;
+const uint16_t GEN_GROW_MAP = 8192;
 const uint16_t MAP_GROW_SPEED = 128;
 const uint16_t MAP_DEATH_SPEED = 32;
 
@@ -113,7 +113,8 @@ void genMap ()
         uint16_t island_X, island_Y;
         do {
             random_coord(MAP_W, MAP_H, island_X, island_Y);
-        } while (island_X < island_radius || island_Y < island_radius || island_X > MAP_W - island_radius || island_Y > MAP_H - island_radius);
+        } while (getBiome(island_X, island_Y) == B_WATER
+            && island_X < island_radius * 2.2 || island_Y < island_radius * 2.2 || island_X > MAP_W - (island_radius * 2.2) || island_Y > MAP_H - (island_radius * 2.2));
       //Calc blob size and pos
         uint16_t blob_X = island_X + ri(island_radius / 2, island_radius);
         uint16_t blob_Y = island_Y + ri(island_radius / 2, island_radius);
