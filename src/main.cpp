@@ -5,6 +5,15 @@
 #include "display.cpp"
 
 
+template <typename T>
+std::string to_string_with_precision (const T a_value, const int n = 2)
+{
+    std::ostringstream out;
+    out << std::setprecision(n) << a_value;
+    return out.str();
+}
+
+
 const uint16_t RELOAD_TIME = 10;
 
 
@@ -184,8 +193,7 @@ int main ()
 
 
       //HUD
-        std::setprecision(1);
-        txt_HUD.setString("Human: "+ std::to_string(humans) +", zombie: "+ std::to_string(zombies) +"; "+ std::to_string(uint8_t(float(zombies)/ents*100)) +"% infected");
+        txt_HUD.setString("Human: "+ std::to_string(humans) +", zombie: "+ std::to_string(zombies) +"; "+ to_string_with_precision(float(zombies)/ents*100) +"% infected");
         sf::sleep(sf::milliseconds(10));
         ++game_time;
     }
