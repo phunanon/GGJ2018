@@ -76,8 +76,8 @@ class Entity {
 
 class Projectile {
   public:
-    float vel_X, vel_Y;
     double pos_X, pos_Y;
+    float vel_X, vel_Y;
     bool had_hit = false;
     bool was_successful = false;
     float opacity = 1;
@@ -259,21 +259,23 @@ bool Entity::tryDir (float dir_X, float dir_Y)
     double d_Y = dir_Y * dist * speed;
     double new_X = pos_X + d_X, new_Y = pos_Y + d_Y;
     double check_X = new_X + dir_X, check_Y = new_Y + dir_Y;
-    uint8_t check_sprite = getSprite(check_X, check_Y);
-    if (!isSolid(check_sprite) && getBiome(check_X, check_Y) != B_WATER && !(type == E_VILLAGER && check_sprite == S_CAMPFIRE)) {
-        pos_X = new_X;
-        pos_Y = new_Y;
-        if (check_sprite == S_CAMPFIRE) {
-            harm(entity[0], 10);
+    uint8_t check_sprite = isBlocking(pos_X, pos_Y, d_X, d_Y);
+    if (!check_sprite && getBiome(check_X, check_Y) != B_WATER) {
+        if (!(type == E_VILLAGER && getSprite(check_X, check_Y) == S_CAMPFIRE)) {
+            pos_X = new_X;
+            pos_Y = new_Y;
+            if (check_sprite == S_CAMPFIRE) {
+                harm(entity[0], 10);
+            }
+            return true;
         }
-        return true;
     } else {
       //Try pushing outwards
         if (type == E_VILLAGER) { pushCrate(check_X, check_Y, d_X, d_Y); }
       //Trigger a loiter
         loiter();
-        return false;
     }
+    return false;
 }
 
 void Entity::move ()
@@ -344,9 +346,7 @@ Projectile::Projectile (double pos_X, double pos_Y, float rot, Entity* shooter)
 
 void Projectile::move ()
 {
-    pos_X += vel_X;
-    pos_Y += vel_Y;
-    if (isSolid(getSprite(pos_X, pos_Y))) {
+    if (isBlocking(pos_X, pos_Y, vel_X, vel_Y)) {
         had_hit = true;
     } else {
       //Check if we've shot an Entity at this position
@@ -365,4 +365,7 @@ void Projectile::move ()
             }
         }
     }
+  //Move the projectile (regardless of collision)
+    pos_X += vel_X;
+    pos_Y += vel_Y;
 }
