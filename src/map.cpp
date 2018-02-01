@@ -88,28 +88,6 @@ bool isSolid (uint8_t sprite_code)
 }
 
 
-uint8_t isBlocking (double pos_X, double pos_Y, float vel_X, float vel_Y)
-{
-    uint8_t check_sprite = getSprite(pos_X + (vel_X*2), pos_Y + (vel_Y*2));
-    if (isSolid(check_sprite)) { return check_sprite; }
-    //Check if passing diagonally between block corners
-    /*float ang = vecToAng(vel_X, vel_Y);
-    if (uint16_t(ang + 23) / 45 % 2) {
-      //Select two sprites between the diagonals
-        int x = vel_X+.5, y = vel_Y+.5;
-        uint16_t x1 = pos_X, y1 = pos_Y, x2 = pos_X, y2 = pos_Y;
-        if (x == 1) {
-            if (y == -1) { y1 -= 1; x2 += 1; }
-            else         { x1 += 1; y2 += 1; }
-        } else {
-            if (y ==  1) { x1 -= 1; y2 += 1; }
-            else         { x1 -= 1; y2 -= 1; }
-        }
-        if (isSolid(getSprite(x1, y1)) || isSolid(getSprite(x2, y2))) { return true; }
-    }*/
-    return false;
-}
-
 
 void pushCrate (uint16_t x, uint16_t y, double dx, double dy)
 {
