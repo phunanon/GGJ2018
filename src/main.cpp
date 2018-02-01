@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp> //http://www.sfml-dev.org/tutorials/2.4
 #include <iostream> //Terminal
+#include <thread>       //For threads, and sleeping
+#include <chrono>       //For thread sleeping
 
 #include "display.cpp"
 #include "math.hpp"
@@ -96,6 +98,7 @@ int main ()
 
     uint64_t prev_shot = 0;
   //Start game-loop
+    auto clock = std::chrono::system_clock::now();
     while (window.isOpen())
     {
         sf::Event event;
@@ -185,7 +188,9 @@ int main ()
 
       //HUD
         txt_HUD.setString("Human: "+ std::to_string(humans) +", zombie: "+ std::to_string(zombies) +"; "+ to_string_with_precision(float(zombies)/ents*100) +"% infected");
-        sf::sleep(sf::milliseconds(10));
+      //Sleep
+        clock += std::chrono::milliseconds(15);
+        std::this_thread::sleep_until(clock);
         ++game_time;
     }
 
