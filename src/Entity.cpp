@@ -1,4 +1,5 @@
 #include "sound.hpp"
+#include "map.hpp"
 
 #define E_VILLAGER 0
 #define E_ZOMBIE   1

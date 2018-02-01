@@ -4,6 +4,7 @@
 #include <chrono>       //For thread sleeping
 
 #include "display.cpp"
+#include "map.hpp"
 #include "math.hpp"
 
 const uint16_t RELOAD_TIME = 10;

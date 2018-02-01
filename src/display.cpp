@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp> //For SFML graphics
-#include "map.cpp"
+#include "map.hpp"
 #include "Entity.cpp"
 #include "math.hpp"
 
