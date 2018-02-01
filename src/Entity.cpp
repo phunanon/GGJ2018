@@ -195,11 +195,15 @@ bool enemyIsHere (Entity* here, uint16_t expected_x, uint16_t expected_y)
     return false;
 }
 
-uint16_t findEntity (uint8_t type, uint16_t mid_X, uint16_t mid_Y, uint8_t radius)
+uint16_t findEntity (uint8_t type, uint16_t mid_X, uint16_t mid_Y, uint8_t radius) //Finds entities 25% of the time
 {
-    for (uint16_t y = mid_Y - radius, ylen = mid_Y + radius; y < ylen; ++y) {
-        for (uint16_t x = mid_X - radius, xlen = mid_X + radius; x < xlen; x += 2) { //+=2 to dirty remove bias
-            if (x == mid_X || y == mid_Y) { continue; }
+    const uint16_t x1 = (mid_X - radius) + ri(0, radius);
+    const uint16_t y1 = (mid_Y - radius) + ri(0, radius);
+    const uint16_t x2 = x1 + radius;
+    const uint16_t y2 = y1 + radius;
+    for (uint16_t y = y1; y < y2; ++y) {
+        for (uint16_t x = x1; x < x2; ++x) {
+            if (x == mid_X && y == mid_Y) { continue; }
             uint16_t test = getMapEntity(x, y);
             if (enemyIsHere(entity[test], x, y) && entity[test]->type == type) { return test; }
         }
@@ -212,7 +216,7 @@ void Entity::think (bool is_nighttime)
     switch (type) {
         case 0: //Villager
           //Find zombie to shoot at
-            if(rb(.5)) {
+            {
                 uint16_t targ_id = findEntity(E_ZOMBIE, pos_X, pos_Y, SHOOT_DISTANCE / (is_nighttime+1));
                 if (targ_id) {
                     step(dir_toward, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, .01); //Face the belligerent

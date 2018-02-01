@@ -3,11 +3,9 @@
 ## Must do
 - Fix sprite overlapping in display
 - Sprite/Entity enums used exclusively over numbers
-- Improve collision detection so Entities can't pass through gaps between Sprites
+- Sandardise and improve collision detection so Entities can't pass through gaps between Sprites
 - Create proper Makefile and Headers
--- Try raycasting:
-- Ensure Entities don't try to attack/shoot through solid sprites
-- Replace bias findEntity(), perhaps with fast-think random tile
+- Ensure Entities don't try to attack/shoot through solid sprites (raycast)
 
 ## Should do
 - test protag random gun accuracy
