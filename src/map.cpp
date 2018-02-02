@@ -271,3 +271,59 @@ void growMap (uint16_t grow_speed, uint16_t death_speed)
         }
     }
 }
+
+
+//http://lodev.org/cgtutor/raycasting.html
+bool raycastClear (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist)
+{
+    float dir_X, dir_Y;
+    targToVec(pos_X, pos_Y, targ_X, targ_Y, dir_X, dir_Y);
+
+    //Length of ray from current position to next x- or y-side
+    float side_dist_X = 0, side_dist_Y = 0;
+
+    //Length of ray from one x- or y-side to next x- or y-side
+    const float delta_X = sqrt_approx(1 + (dir_Y * dir_Y) / (dir_X * dir_X));
+    const float delta_Y = sqrt_approx(1 + (dir_X * dir_X) / (dir_Y * dir_Y));
+    float perpWallDist;
+
+    // what direction to step in x or y-direction (either +1 or -1)
+    int8_t step_X = 0, step_Y = 0;
+    //Which box of the map we're in
+    uint16_t check_X = pos_X;
+    uint16_t check_Y = pos_Y;
+
+    if (dir_X < 0) {
+        step_X = -1;
+        side_dist_X = (pos_X - check_X) * delta_X;
+    } else {
+        step_X = 1;
+        side_dist_X = (check_X + 1.0 - pos_X) * delta_X;
+    }
+
+    if (dir_Y < 0) {
+        step_Y = -1;
+        side_dist_Y = (pos_Y - check_Y) * delta_Y;
+    } else {
+        step_Y = 1;
+        side_dist_Y = (check_Y + 1.0 - pos_Y) * delta_Y;
+    }
+
+    //Perform DDA
+    int hit = 0;
+    while (!hit) {
+      //Check if ray has reached its max requested range
+        if (dist < eD_approx(pos_X, pos_Y, check_X, check_Y)) { return true; }
+        //Jump to next map square in x- or y-direction
+        if (side_dist_X < side_dist_Y){
+            side_dist_X += delta_X;
+            check_X += step_X;
+        } else {
+            side_dist_Y += delta_Y;
+            check_Y += step_Y;
+        }
+        //Check if ray has hit a solid
+        hit = isSolid(getSprite(check_X, check_Y));
+    }
+    return false;
+}

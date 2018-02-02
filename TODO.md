@@ -5,7 +5,6 @@
 - Sprite/Entity enums used exclusively over numbers
 - Sandardise and improve collision detection so Entities can't pass through gaps between Sprites
 - Create proper Makefile and Headers
-- Ensure Entities don't try to attack/shoot through solid sprites (raycast)
 - Enable deletion of Entities (don't rely on index_in_array - a vestige of GGJ)
 - Investigate bias NW loiter (note: testing ri() showed no particular bias)
 
@@ -33,6 +32,7 @@
 - Zombies start in one part of the map and spread, protag near this
 - Slide instead of stop on Entity/Sprite collision
 - Test protag random gun accuracy
+- -Wall compliance
 
 ## Won't do
 - Crate push pressure

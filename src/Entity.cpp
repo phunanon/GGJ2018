@@ -24,6 +24,7 @@ const float PROJECTILE_SPEED = .32;
 const float LUX_HEAL = .2;
 const uint8_t SOUND_INTERVAL = 40;
 const uint8_t KILL_HP_REWARD = 20;
+const uint8_t CAMPFIRE_DAMAGE = 20;
 
 enum StepDir {
     dir_away,
@@ -226,11 +227,15 @@ void Entity::think (bool is_nighttime)
         case 0: //Villager
           //Find zombie to shoot at
             {
-                uint16_t targ_id = findEntity(E_ZOMBIE, pos_X, pos_Y, SHOOT_DISTANCE / (is_nighttime+1));
+                float shoot_dist = SHOOT_DISTANCE / (is_nighttime+1);
+                uint16_t targ_id = findEntity(E_ZOMBIE, pos_X, pos_Y, shoot_dist);
                 if (targ_id) {
-                    step(dir_toward, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, .01); //Face the belligerent
-                    shoot(entity[targ_id]);
-                    return;
+                  //Check target is not blocked
+                    if (raycastClear(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, shoot_dist)) {
+                        step(dir_toward, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, .01); //Face the belligerent
+                        shoot(entity[targ_id]);
+                        return;
+                    }
                 }
             }
           //Loiter
@@ -245,11 +250,15 @@ void Entity::think (bool is_nighttime)
                 }
             } else {
               //Find a Villager to attack
-                uint16_t targ_id = findEntity(E_VILLAGER, pos_X, pos_Y, ATTACK_DISTANCE * (is_nighttime+1));
+                float attack_dist = ATTACK_DISTANCE * (is_nighttime+1);
+                uint16_t targ_id = findEntity(E_VILLAGER, pos_X, pos_Y, attack_dist);
                 if (targ_id) {
-                    if (entity[targ_id]->targetted_at + 50 < game_time) {
-                        attack(entity[targ_id]);
-                        return;
+                  //Check target is not blocked
+                    if (raycastClear(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, attack_dist)) {
+                        if (entity[targ_id]->targetted_at + 50 < game_time) {
+                            attack(entity[targ_id]);
+                            return;
+                        }
                     }
                 }
               //Loiter
@@ -277,7 +286,7 @@ bool Entity::tryDir (float dir_X, float dir_Y)
         pos_X = new_X;
         pos_Y = new_Y;
         if (check_sprite == S_CAMPFIRE) {
-            harm(entity[0], 10);
+            harm(entity[0], CAMPFIRE_DAMAGE);
         }
         return true;
     } else {

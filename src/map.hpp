@@ -58,5 +58,7 @@ void growMap (uint16_t grow_speed = MAP_GROW_SPEED, uint16_t death_speed = MAP_D
 
 void genMap ();
 
+bool raycastClear (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist);
+
 
 #endif
