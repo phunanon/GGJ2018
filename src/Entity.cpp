@@ -23,6 +23,7 @@ const uint8_t ATTACK_DAMAGE = 45;
 const float PROJECTILE_SPEED = .25;
 const float LUX_HEAL = .2;
 const uint8_t SOUND_INTERVAL = 40;
+const uint8_t KILL_HP_REWARD = 20;
 
 enum StepDir {
     dir_away,
@@ -47,7 +48,10 @@ class Entity {
     uint64_t targetted_at = 0; //Last time this Entity was targetted
     uint64_t prev_hurt = 0; //Last time this entity was hurt
 
-    float health_score = MAX_HEALTH, speed = NORMAL_SPEED, power_score = ATTACK_DAMAGE;
+    float health_score = MAX_HEALTH;
+    float max_health = MAX_HEALTH;
+    float speed = NORMAL_SPEED;
+    float power_score = ATTACK_DAMAGE;
     uint16_t kill_count = 0;
 
     Entity (uint8_t, double, double);
@@ -60,8 +64,8 @@ class Entity {
     void harm (Entity*, uint8_t);
     void heal (float);
     void animate ();
-    void shoot(Entity*);
-    void shootDir();
+    void shoot (Entity*);
+    void shootDir ();
 
   private:
       void loiter ();
@@ -160,16 +164,17 @@ void Entity::harm (Entity* attacker, uint8_t damage)
     if (sound_id > 0) {
         playSound(sound_id, sound_pitch * rf(.90, 1.10), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
     }
-  //Inc kill_count
+  //Inc kill_count and reward
     attacker->kill_count += is_fatal;
+    if (attacker->type == E_VILLAGER) { attacker->max_health += is_fatal * KILL_HP_REWARD; }
 }
 
 void Entity::heal (float amount)
 {
-    if (health_score + amount < MAX_HEALTH) {
+    if (health_score + amount < max_health) {
         health_score += amount;
     } else {
-        health_score = MAX_HEALTH;
+        health_score = max_health;
     }
 }
 

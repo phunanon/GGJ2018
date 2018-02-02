@@ -265,7 +265,7 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
             if (!entity[e]->is_dead) {
               //Draw health bar
                 healthBar.setPosition(sf::Vector2f(draw_X, draw_Y));
-                float health_bar_len = ((entity[e]->health_score) / MAX_HEALTH) * ENTITY_W;
+                float health_bar_len = ((entity[e]->health_score) / entity[e]->max_health) * ENTITY_W;
                 healthBar.setSize(sf::Vector2f(health_bar_len, 5));
                 r = 255 * (1 - (health_bar_len / ENTITY_W)) * day_l;
                 g = 255 * (health_bar_len / ENTITY_W) * day_l;
@@ -273,7 +273,7 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
                 healthBar.setFillColor(sf::Color(r, g, b));
                 window.draw(healthBar);
               //Draw kill_count
-                txt_float.setPosition(sf::Vector2f(draw_X + ENTITY_W / 2.3, draw_Y - 3));
+                txt_float.setPosition(sf::Vector2f(draw_X, draw_Y - 3));
                 txt_float.setString(std::to_string(entity[e]->kill_count));
                 window.draw(txt_float);
             }
