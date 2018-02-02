@@ -6,7 +6,8 @@
 - Sandardise and improve collision detection so Entities can't pass through gaps between Sprites
 - Create proper Makefile and Headers
 - Ensure Entities don't try to attack/shoot through solid sprites (raycast)
-- Kcachegrind
+- Enable deletion of Entities (don't rely on index_in_array - a vestige of GGJ)
+- Investigate bias NW loiter (note: testing ri() showed no particular bias)
 
 ## Should do
 - background music
@@ -17,6 +18,7 @@
 - Fix Villager animations looking backwards at certain angles
 - Mouse crosshair
 - Improve crate sprite
+- Fade out and delete the dead
 
 ## Could do
 - Animated foliage
@@ -30,7 +32,6 @@
 - Pause
 - Zombies start in one part of the map and spread, protag near this
 - Slide instead of stop on Entity/Sprite collision
-- Investigate bias NW loiter (note: testing ri() showed no particular bias)
 - Test protag random gun accuracy
 
 ## Won't do
