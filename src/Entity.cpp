@@ -44,6 +44,7 @@ class Entity {
     float rot = 0; // As degrees
     uint8_t frame = 0;
     bool had_moved = true;
+    float opacity = 1;
 
     uint64_t targetted_at = 0; //Last time this Entity was targetted
     uint64_t prev_hurt = 0; //Last time this entity was hurt

@@ -158,8 +158,12 @@ int main ()
         uint16_t ents = 0, humans = 0, zombies = 0;
         for (uint16_t e = 2, elen = entity.size(); e < elen; ++e) {
             Entity* ent = entity[e];
+            if (ent->opacity <= 0) { continue; }
             ent->animate();
-            if (ent->is_dead) { continue; }
+            if (ent->is_dead) {
+                ent->opacity -= .005;
+                continue;
+            }
             if (rb(0.03)) { ent->think(is_nighttime); }
             ent->move();
 

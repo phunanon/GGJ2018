@@ -212,6 +212,7 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
     }
 
     for (uint16_t e = 1, elen = entity.size(); e < elen; ++e) {
+        if (entity[e]->opacity <= 0) { continue; }
         float x = entity[e]->pos_X, y = entity[e]->pos_Y;
         if (x > camera_X1 && y > camera_Y1 && x < camera_X2 && y < camera_Y2) {
             float draw_X, draw_Y;
@@ -242,7 +243,7 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
                 if (entity[e]->type == E_VILLAGER) { r = 255; g /= 2; b /= 2; }
                 if (entity[e]->type == E_ZOMBIE) { r /= 2; g = 255; b /= 2; }
             }
-            sf::Color color (r, g, b);
+            sf::Color color (r, g, b, entity[e]->opacity * 255);
             //Texture & Display
             switch (entity[e]->type) {
                 case 0: //Villager
