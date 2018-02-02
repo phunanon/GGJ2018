@@ -97,7 +97,7 @@ int main ()
         prot->pos_Y = ri(0, MAP_H);
     } while (getBiome(prot->pos_X, prot->pos_Y) != B_STONE || getSprite(prot->pos_X, prot->pos_Y));
 
-    uint64_t prev_shot = 0;
+    uint64_t prot_prev_shot = 0;
   //Start game-loop
     auto clock = std::chrono::system_clock::now();
     while (window.isOpen())
@@ -125,9 +125,9 @@ int main ()
         } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { //Move protag left (SW)
             angToVec(prot->rot + 270, dir_X, dir_Y);
         }
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && prev_shot + RELOAD_TIME < game_time) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && prot_prev_shot + RELOAD_TIME < game_time) {
             prot->shootDir();
-            prev_shot = game_time;
+            prot_prev_shot = game_time;
         }
       //Speed based on mouse distance from the center
         if (mouse_pos.x > WINDOW_W*.75) { mouse_pos.x = WINDOW_W*.75; }
@@ -160,7 +160,7 @@ int main ()
             Entity* ent = entity[e];
             ent->animate();
             if (ent->is_dead) { continue; }
-            if (rb(0.02)) { ent->think(is_nighttime); }
+            if (rb(0.03)) { ent->think(is_nighttime); }
             ent->move();
 
             ++ents;

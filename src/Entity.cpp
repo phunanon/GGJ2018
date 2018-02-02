@@ -11,16 +11,16 @@ Entity* prot; //Protagonist
 
 const uint8_t ENTITY_W = 32, ENTITY_H = 64;
 const uint16_t GEN_VILLAGERS = 1024;
-const uint16_t GEN_ZOMBIES = 64;
+const uint16_t GEN_ZOMBIES = 256;
 const float ANI_INTERVAL = 2;
-const uint8_t SHOOT_DISTANCE = 8;
+const uint8_t SHOOT_DISTANCE = 12;
 const uint8_t ATTACK_DISTANCE = 6;
 const uint8_t LASHOUT_INTERVAL = 20;
 const uint8_t MAX_HEALTH = 255;
-const float NORMAL_SPEED = .02, ATTACK_SPEED = .06;
-const uint8_t PROJECTILE_DAMAGE = 12;
+const float NORMAL_SPEED = .032, ATTACK_SPEED = .08;
+const uint8_t PROJECTILE_DAMAGE = 10;
 const uint8_t ATTACK_DAMAGE = 45;
-const float PROJECTILE_SPEED = .25;
+const float PROJECTILE_SPEED = .32;
 const float LUX_HEAL = .2;
 const uint8_t SOUND_INTERVAL = 40;
 const uint8_t KILL_HP_REWARD = 20;
@@ -178,9 +178,11 @@ void Entity::heal (float amount)
     }
 }
 
+
 void Entity::loiter ()
 {
     moveTowards(pos_X + ri(-3, 3), pos_Y + ri(-3, 3));
+    moveTowards(pos_X + ri(-4, 4), pos_Y + ri(-4, 4));
     attack_timeout = 0;
 }
 
@@ -231,7 +233,7 @@ void Entity::think (bool is_nighttime)
                 }
             }
           //Loiter
-            if (rb(.4)) { loiter(); }
+            if (rb(.2)) { loiter(); }
             break;
         case 1: //Zombie
             if (attack_timeout) {
