@@ -12,7 +12,7 @@
 #define AUD_ZOMBIE_HURT   2
 #define AUD_ZOMBIE_DIE    3
 
-void playSound (uint8_t sound, float pitch, double orgX, double orgY, double protag_X, double protag_Y);
+void playSound (uint8_t sound, float pitch, float orgX, float orgY, float protag_X, float protag_Y);
 
 void initSound ();
 

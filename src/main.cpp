@@ -140,8 +140,8 @@ int main ()
             prot->had_moved = true;
             prot->speed = dist / 8;
         }
-        double new_X = prot->pos_X + dir_X/6;
-        double new_Y = prot->pos_Y + dir_Y/6;
+        float new_X = prot->pos_X + dir_X/6;
+        float new_Y = prot->pos_Y + dir_Y/6;
         if (prot->tryDir(dir_X, dir_Y)) {
             prot->pos_X = new_X;
             prot->pos_Y = new_Y;

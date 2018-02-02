@@ -52,7 +52,7 @@ bool isFoliage (uint8_t sprite_code);
 bool isSolid (uint8_t sprite_code);
 
 
-void pushCrate (uint16_t x, uint16_t y, double dx, double dy);
+void pushCrate (uint16_t x, uint16_t y, float dx, float dy);
 
 void growMap (uint16_t grow_speed = MAP_GROW_SPEED, uint16_t death_speed = MAP_DEATH_SPEED);
 

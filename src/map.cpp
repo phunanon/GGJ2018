@@ -66,7 +66,7 @@ bool isSolid (uint8_t sprite_code)
 
 
 
-void pushCrate (uint16_t x, uint16_t y, double dx, double dy)
+void pushCrate (uint16_t x, uint16_t y, float dx, float dy)
 {
     if (fabs(dx) > fabs(dy)) { dx = (dx > 0 ? 1 : -1); dy = 0; } else { dx = 0; dy = (dy > 0 ? 1 : -1); }
     uint16_t px = x + int16_t(dx);

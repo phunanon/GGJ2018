@@ -5,7 +5,7 @@ std::vector<sf::SoundBuffer*> sound_buffers;
 std::vector<sf::Sound*> sound_channels;
 
 uint8_t curr_sch = 0;
-void playSound (uint8_t sound, float pitch, double orgX, double orgY, double protag_X, double protag_Y) {
+void playSound (uint8_t sound, float pitch, float orgX, float orgY, float protag_X, float protag_Y) {
   //Load buffer
     sound_channels[curr_sch]->setBuffer(*sound_buffers[sound]);
   //Calculate volume, based on distance

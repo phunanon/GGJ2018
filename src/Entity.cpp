@@ -39,7 +39,7 @@ class Entity {
     uint16_t index_in_array;
     bool is_dead = false;
 
-    double pos_X = 0, pos_Y = 0; // Entity position
+    float pos_X = 0, pos_Y = 0; // Entity position
     uint16_t targ_X = 0, targ_Y = 0; //Target position
     float rot = 0; // As degrees
     uint8_t frame = 0;
@@ -54,7 +54,7 @@ class Entity {
     float power_score = ATTACK_DAMAGE;
     uint16_t kill_count = 0;
 
-    Entity (uint8_t, double, double);
+    Entity (uint8_t, float, float);
     Entity (); //For dummy entity
 
     void think (bool);
@@ -71,7 +71,7 @@ class Entity {
       void loiter ();
       void attack (Entity*);
       void lashOut ();
-      void step (StepDir, double, double, float);
+      void step (StepDir, float, float, float);
       Entity* target = NULL;
       uint8_t attack_timeout = 0;
       uint64_t last_lashout = 0;
@@ -82,19 +82,19 @@ class Entity {
 class Projectile {
   public:
     float vel_X, vel_Y;
-    double pos_X, pos_Y;
+    float pos_X, pos_Y;
     bool had_hit = false;
     bool was_successful = false;
     float opacity = 1;
     Entity* shooter;
 
     void move();
-    Projectile(double, double, float, Entity*);
+    Projectile(float, float, float, Entity*);
     ~Projectile();
 
 };
 
-Entity::Entity (uint8_t type, double pos_X, double pos_Y)
+Entity::Entity (uint8_t type, float pos_X, float pos_Y)
 {
     this->index_in_array = entity.size();
     this->type = type;
@@ -186,9 +186,9 @@ void Entity::loiter ()
     attack_timeout = 0;
 }
 
-void Entity::step (StepDir direction, double x, double y, float dist)
+void Entity::step (StepDir direction, float x, float y, float dist)
 {
-    double step_X, step_Y;
+    float step_X, step_Y;
     targToVec(pos_X, pos_Y, x, y, step_X, step_Y);
     moveTowards(pos_X + (step_X * dist), pos_Y + (step_Y * dist));
 }
@@ -267,10 +267,10 @@ void Entity::moveTowards (uint16_t x, uint16_t y)
 bool Entity::tryDir (float dir_X, float dir_Y)
 {
     float dist = eD_approx(pos_X, pos_Y, pos_X + dir_X, pos_Y + dir_Y);
-    double d_X = dir_X * dist * speed;
-    double d_Y = dir_Y * dist * speed;
-    double new_X = pos_X + d_X, new_Y = pos_Y + d_Y;
-    double check_X = new_X + dir_X, check_Y = new_Y + dir_Y;
+    float d_X = dir_X * dist * speed;
+    float d_Y = dir_Y * dist * speed;
+    float new_X = pos_X + d_X, new_Y = pos_Y + d_Y;
+    float check_X = new_X + dir_X, check_Y = new_Y + dir_Y;
     uint8_t check_sprite = getSprite(check_X, check_Y);
     if (!isSolid(check_sprite) && getBiome(check_X, check_Y) != B_WATER && !(type == E_VILLAGER && check_sprite == S_CAMPFIRE)) {
         pos_X = new_X;
@@ -326,7 +326,7 @@ void Entity::animate ()
 
 void Entity::shoot (Entity* victim)
 {
-    double dir_X, dir_Y;
+    float dir_X, dir_Y;
     targToVec(pos_X, pos_Y, victim->pos_X, victim->pos_Y, dir_X, dir_Y);
     float dir_ang = vecToAng(dir_X, dir_Y);
     playSound(AUD_SHOOT, rf(.75, 1.25), pos_X, pos_Y, prot->pos_X, prot->pos_Y);
@@ -344,7 +344,7 @@ void Entity::shootDir ()
 
 
 
-Projectile::Projectile (double pos_X, double pos_Y, float rot, Entity* shooter)
+Projectile::Projectile (float pos_X, float pos_Y, float rot, Entity* shooter)
 {
     this->pos_X = pos_X;
     this->pos_Y = pos_Y;

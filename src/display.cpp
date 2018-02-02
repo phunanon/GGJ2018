@@ -78,7 +78,7 @@ void getZombieTex (Entity* e, uint16_t &tex_X, uint16_t &tex_Y)
 
 
 
-void drawBiome (uint32_t game_time, sf::RenderWindow &window, float day_l, uint16_t x, uint16_t y, double draw_X, double draw_Y)
+void drawBiome (uint32_t game_time, sf::RenderWindow &window, float day_l, uint16_t x, uint16_t y, float draw_X, float draw_Y)
 {
     uint32_t *mapPtr = &map[x][y];
   //Prepare biome for draw
@@ -124,7 +124,7 @@ void drawBiome (uint32_t game_time, sf::RenderWindow &window, float day_l, uint1
     window.draw(biomeTile);
 }
 
-void drawSprite (uint32_t game_time, sf::RenderWindow &window, float day_l, uint16_t x, uint16_t y, double draw_X, double draw_Y)
+void drawSprite (uint32_t game_time, sf::RenderWindow &window, float day_l, uint16_t x, uint16_t y, float draw_X, float draw_Y)
 {
     uint32_t *mapPtr = &map[x][y];
     uint8_t sprite_code = getSprite(x, y);
@@ -154,7 +154,7 @@ void drawSprite (uint32_t game_time, sf::RenderWindow &window, float day_l, uint
     }
 }
 
-void doISOMETRIC (uint32_t game_time, sf::RenderWindow &window, void (*drawer)(uint32_t, sf::RenderWindow&, float, uint16_t, uint16_t, double, double))
+void doISOMETRIC (uint32_t game_time, sf::RenderWindow &window, void (*drawer)(uint32_t, sf::RenderWindow&, float, uint16_t, uint16_t, float, float))
 {
   //Calculate map crop (as map coords)
     int16_t tiles_X, tiles_Y, camera_X1, camera_Y1, camera_X2, camera_Y2;
@@ -165,7 +165,7 @@ void doISOMETRIC (uint32_t game_time, sf::RenderWindow &window, void (*drawer)(u
     camera_X2 = camera_X1 + tiles_X + 2;
     camera_Y2 = camera_Y1 + tiles_Y*2 + 2;
   //Prepare isometric loop
-    double draw_X, draw_Y;
+    float draw_X, draw_Y;
     {
         float p_X_d = decimal(prot->pos_X);
         float p_Y_d = decimal(prot->pos_Y);
@@ -177,7 +177,7 @@ void doISOMETRIC (uint32_t game_time, sf::RenderWindow &window, void (*drawer)(u
     }
     draw_X += TILE_W * (tiles_X/4);
     draw_Y -= TILE_H*2;
-    double start_draw_X = draw_X, start_draw_Y = draw_Y;
+    float start_draw_X = draw_X, start_draw_Y = draw_Y;
   //Start isometric loop
     for (int16_t y = camera_Y1; y < camera_Y2; ++y) {
       for (int16_t x = camera_X2; x >= camera_X1; --x) {
@@ -200,9 +200,9 @@ void doISOMETRIC (uint32_t game_time, sf::RenderWindow &window, void (*drawer)(u
 
 void drawEntities (uint32_t game_time, sf::RenderWindow &window)
 {
-    double camera_X1, camera_Y1, camera_X2, camera_Y2;
+    float camera_X1, camera_Y1, camera_X2, camera_Y2;
     {
-        double tiles_X, tiles_Y;
+        float tiles_X, tiles_Y;
         tiles_X = (WINDOW_W / TILE_SCALE);
         tiles_Y = (WINDOW_H / TILE_SCALE);
         camera_X1 = prot->pos_X - tiles_X/2;
@@ -212,14 +212,14 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
     }
 
     for (uint16_t e = 1, elen = entity.size(); e < elen; ++e) {
-        double x = entity[e]->pos_X, y = entity[e]->pos_Y;
+        float x = entity[e]->pos_X, y = entity[e]->pos_Y;
         if (x > camera_X1 && y > camera_Y1 && x < camera_X2 && y < camera_Y2) {
-            double draw_X, draw_Y;
+            float draw_X, draw_Y;
             draw_X = (x - camera_X1); //Tiles across X
             draw_Y = (y - camera_Y1); //Tiles across Y
             //In order to position correctly:
             {
-                double e_offset_X = 0, e_offset_Y = 0;
+                float e_offset_X = 0, e_offset_Y = 0;
                 //First go right and down according to the Y coord
                 e_offset_X += (draw_Y * (TILE_W/2));
                 e_offset_Y += (draw_Y * (TILE_H/2));
@@ -283,9 +283,9 @@ void drawEntities (uint32_t game_time, sf::RenderWindow &window)
 
 void drawProjectiles (uint32_t game_time, sf::RenderWindow &window)
 {
-    double camera_X1, camera_Y1, camera_X2, camera_Y2;
+    float camera_X1, camera_Y1, camera_X2, camera_Y2;
     {
-        double tiles_X, tiles_Y;
+        float tiles_X, tiles_Y;
         tiles_X = (WINDOW_W / TILE_SCALE);
         tiles_Y = (WINDOW_H / TILE_SCALE);
         camera_X1 = prot->pos_X - tiles_X/2;
@@ -295,13 +295,13 @@ void drawProjectiles (uint32_t game_time, sf::RenderWindow &window)
     }
 
     for (uint16_t p = 0, plen = projectile.size(); p < plen; ++p) {
-        double x = projectile[p]->pos_X, y = projectile[p]->pos_Y;
+        float x = projectile[p]->pos_X, y = projectile[p]->pos_Y;
         if (x > camera_X1 && y > camera_Y1 && x < camera_X2 && y < camera_Y2) {
-            double draw_X, draw_Y;
+            float draw_X, draw_Y;
             draw_X = (x - camera_X1); //Tiles across X
             draw_Y = (y - camera_Y1); //Tiles across Y
             //In order to position correctly:
-            double e_offset_X = 0, e_offset_Y = 0;
+            float e_offset_X = 0, e_offset_Y = 0;
             //First go right and down according to the Y coord
             e_offset_X += (draw_Y * (TILE_W/2));
             e_offset_Y += (draw_Y * (TILE_H/2));

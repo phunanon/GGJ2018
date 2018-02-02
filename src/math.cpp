@@ -44,9 +44,9 @@ bool rb (float dist) //Random boolean
     return b_dist(gen);
 }
 
-double rf (double min, double max)
+float rf (float min, float max)
 {
-    std::uniform_real_distribution<double> rd_dist(min, max); //http://www.cplusplus.com/reference/random/uniform_real_distribution/uniform_real_distribution/ & /operator()/
+    std::uniform_real_distribution<float> rd_dist(min, max); //http://www.cplusplus.com/reference/random/uniform_real_distribution/uniform_real_distribution/ & /operator()/
     return rd_dist(gen);
 }
 
@@ -56,9 +56,9 @@ int ri (int min, int max)
     return id_dist(gen);
 }
 
-double rf_nd (double average, double spread)
+float rf_nd (float average, float spread)
 {
-    std::normal_distribution<double> nd_dist(average, spread);
+    std::normal_distribution<float> nd_dist(average, spread);
     return nd_dist(gen);
 }
 //===================================
@@ -87,16 +87,16 @@ void angToVec (float rot, float &dir_X, float &dir_Y) //Takes an angle, and give
     dir_Y = -cos(rad_rot);
 }
 
-void targToVec (double ourX, double ourY, double tarX, double tarY, double &dirX, double &dirY)
+void targToVec (float ourX, float ourY, float tarX, float tarY, float &dirX, float &dirY)
 {
   //Find the difference in coordinates
-    double diffX = tarX - ourX;
-    double diffY = tarY - ourY;
+    float diffX = tarX - ourX;
+    float diffY = tarY - ourY;
     //Finding the biggest direction, absolute
     bool xIsBiggest = fabs(diffX) > fabs(diffY);
     //The biggest direction becomes 1 (in the direction)
-    double yDir = (diffY > 0 ? 1 : -1);
-    double xDir = (diffX > 0 ? 1 : -1);
+    float yDir = (diffY > 0 ? 1 : -1);
+    float xDir = (diffX > 0 ? 1 : -1);
     if (xIsBiggest)
       { dirX = xDir; }
      else
@@ -121,9 +121,9 @@ float decimal (float num)
 }
 
 //https://stackoverflow.com/a/16606128/7000138
-std::string to_string_with_precision (double val, int n)
+std::string to_string_with_precision (float val, int n)
 {
-    double test = val;
+    float test = val;
     while (test > 10) {
         test /= 10;
         ++n;
