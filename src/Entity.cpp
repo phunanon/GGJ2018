@@ -83,8 +83,8 @@ class Entity {
 
 class Projectile {
   public:
-    float vel_X, vel_Y;
     float pos_X, pos_Y;
+    float vel_X, vel_Y;
     bool had_hit = false;
     bool was_successful = false;
     float opacity = 1;
@@ -231,7 +231,7 @@ void Entity::think (bool is_nighttime)
                 uint16_t targ_id = findEntity(E_ZOMBIE, pos_X, pos_Y, shoot_dist);
                 if (targ_id) {
                   //Check target is not blocked
-                    if (raycastClear(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, shoot_dist)) {
+                    if (!raycastBlocking(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, shoot_dist)) {
                         step(dir_toward, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, .01); //Face the belligerent
                         shoot(entity[targ_id]);
                         return;
@@ -254,7 +254,7 @@ void Entity::think (bool is_nighttime)
                 uint16_t targ_id = findEntity(E_VILLAGER, pos_X, pos_Y, attack_dist);
                 if (targ_id) {
                   //Check target is not blocked
-                    if (raycastClear(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, attack_dist)) {
+                    if (!raycastBlocking(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, attack_dist)) {
                         if (entity[targ_id]->targetted_at + 50 < game_time) {
                             attack(entity[targ_id]);
                             return;
@@ -291,7 +291,7 @@ bool Entity::tryDir (float dir_X, float dir_Y)
         return true;
     } else {
       //Try pushing outwards
-        if (type == E_VILLAGER) { pushCrate(check_X, check_Y, d_X, d_Y); }
+        if (type == E_VILLAGER) { tryPushCrate(check_X, check_Y, d_X, d_Y); }
       //Trigger a loiter
         loiter();
         return false;

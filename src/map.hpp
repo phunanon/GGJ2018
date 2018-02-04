@@ -10,6 +10,8 @@
 #define B_GRASS 2
 #define B_SAND  3
 
+#define S_CRATE    1
+#define S_WALL     2
 #define S_CAMPFIRE 3
 #define S_TREE     4
 #define S_BUSH     5
@@ -52,13 +54,13 @@ bool isFoliage (uint8_t sprite_code);
 bool isSolid (uint8_t sprite_code);
 
 
-void pushCrate (uint16_t x, uint16_t y, float dx, float dy);
+void tryPushCrate (uint16_t x, uint16_t y, float dx, float dy);
 
 void growMap (uint16_t grow_speed = MAP_GROW_SPEED, uint16_t death_speed = MAP_DEATH_SPEED);
 
 void genMap ();
 
-bool raycastClear (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist);
+uint8_t raycastBlocking (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist);
 
 
 #endif

@@ -59,14 +59,14 @@ bool isFoliage (uint8_t sprite_code)
 bool isSolid (uint8_t sprite_code)
 {
     switch (sprite_code) {
-        case 1: case 2: return true;
+        case S_WALL: case S_CRATE: case S_CAMPFIRE: return true;
         default: return false;
     }
 }
 
 
 
-void pushCrate (uint16_t x, uint16_t y, float dx, float dy)
+void tryPushCrate (uint16_t x, uint16_t y, float dx, float dy)
 {
     if (fabs(dx) > fabs(dy)) { dx = (dx > 0 ? 1 : -1); dy = 0; } else { dx = 0; dy = (dy > 0 ? 1 : -1); }
     uint16_t px = x + int16_t(dx);
@@ -274,7 +274,8 @@ void growMap (uint16_t grow_speed, uint16_t death_speed)
 
 
 //http://lodev.org/cgtutor/raycasting.html
-bool raycastClear (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist)
+//Returns blocking Sprite
+uint8_t raycastBlocking (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist)
 {
     float dir_X, dir_Y;
     targToVec(pos_X, pos_Y, targ_X, targ_Y, dir_X, dir_Y);
@@ -309,12 +310,12 @@ bool raycastClear (float pos_X, float pos_Y, float targ_X, float targ_Y, float d
         side_dist_Y = (check_Y + 1.0 - pos_Y) * delta_Y;
     }
 
-    //Perform DDA
-    int hit = 0;
-    while (!hit) {
+  //Perform DDA
+    uint8_t check_sprite = 0;
+    while (true) {
       //Check if ray has reached its max requested range
-        if (dist < eD_approx(pos_X, pos_Y, check_X, check_Y)) { return true; }
-        //Jump to next map square in x- or y-direction
+        if (dist < eD_approx(pos_X, pos_Y, check_X, check_Y)) { return 0; }
+      //Jump to next map square in x- or y-direction
         if (side_dist_X < side_dist_Y){
             side_dist_X += delta_X;
             check_X += step_X;
@@ -322,8 +323,9 @@ bool raycastClear (float pos_X, float pos_Y, float targ_X, float targ_Y, float d
             side_dist_Y += delta_Y;
             check_Y += step_Y;
         }
-        //Check if ray has hit a solid
-        hit = isSolid(getSprite(check_X, check_Y));
+      //Check if ray has hit a solid
+        check_sprite = getSprite(check_X, check_Y);
+        if (isSolid(check_sprite)) { break; }
     }
-    return false;
+    return check_sprite;
 }
