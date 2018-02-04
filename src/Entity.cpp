@@ -231,7 +231,7 @@ void Entity::think (bool is_nighttime)
                 uint16_t targ_id = findEntity(E_ZOMBIE, pos_X, pos_Y, shoot_dist);
                 if (targ_id) {
                   //Check target is not blocked
-                    if (!raycastBlocking(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, shoot_dist)) {
+                    if (!raycastBlocking(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, shoot_dist, isCompletelySolid)) {
                         step(dir_toward, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, .01); //Face the belligerent
                         shoot(entity[targ_id]);
                         return;
@@ -254,7 +254,7 @@ void Entity::think (bool is_nighttime)
                 uint16_t targ_id = findEntity(E_VILLAGER, pos_X, pos_Y, attack_dist);
                 if (targ_id) {
                   //Check target is not blocked
-                    if (!raycastBlocking(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, attack_dist)) {
+                    if (!raycastBlocking(pos_X, pos_Y, entity[targ_id]->pos_X, entity[targ_id]->pos_Y, attack_dist, isCompletelySolid)) {
                         if (entity[targ_id]->targetted_at + 50 < game_time) {
                             attack(entity[targ_id]);
                             return;
@@ -282,7 +282,7 @@ bool Entity::tryDir (float dir_X, float dir_Y)
     float new_X = pos_X + d_X, new_Y = pos_Y + d_Y;
     float check_X = new_X + dir_X, check_Y = new_Y + dir_Y;
     uint8_t check_sprite = getSprite(check_X, check_Y);
-    if (!isSolid(check_sprite) && getBiome(check_X, check_Y) != B_WATER && !(type == E_VILLAGER && check_sprite == S_CAMPFIRE)) {
+    if (!isCompletelySolid(check_sprite) && getBiome(check_X, check_Y) != B_WATER && !(type == E_VILLAGER && check_sprite == S_CAMPFIRE)) {
         pos_X = new_X;
         pos_Y = new_Y;
         if (check_sprite == S_CAMPFIRE) {
@@ -368,7 +368,7 @@ void Projectile::move ()
 {
     pos_X += vel_X;
     pos_Y += vel_Y;
-    if (isSolid(getSprite(pos_X, pos_Y))) {
+    if (isCompletelySolid(getSprite(pos_X, pos_Y))) {
         had_hit = true;
     } else {
       //Check if we've shot an Entity at this position
@@ -380,7 +380,7 @@ void Projectile::move ()
             had_hit = was_successful = true;
             here->harm(shooter, PROJECTILE_DAMAGE);
         }
-        if (!isSolid(getSprite(pos_X - 1, pos_Y + 1))) {
+        if (!isCompletelySolid(getSprite(pos_X - 1, pos_Y + 1))) {
             if (enemyIsHere(below, pos_X - 1, pos_Y + 1) && below->type == E_ZOMBIE && below->index_in_array != shooter->index_in_array) {
                 had_hit = was_successful = true;
                 below->harm(shooter, PROJECTILE_DAMAGE);

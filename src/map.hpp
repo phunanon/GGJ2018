@@ -51,7 +51,8 @@ uint16_t getMapEntity (uint16_t x, uint16_t y);
 void setMapEntity (uint16_t x, uint16_t y, uint16_t e);
 
 bool isFoliage (uint8_t sprite_code);
-bool isSolid (uint8_t sprite_code);
+bool isCompletelySolid (uint8_t sprite_code);
+bool isntWalkable (uint8_t sprite_code);
 
 
 void tryPushCrate (uint16_t x, uint16_t y, float dx, float dy);
@@ -60,7 +61,7 @@ void growMap (uint16_t grow_speed = MAP_GROW_SPEED, uint16_t death_speed = MAP_D
 
 void genMap ();
 
-uint8_t raycastBlocking (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist);
+uint8_t raycastBlocking (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist, bool (*blockTester)(uint8_t));
 
 
 #endif

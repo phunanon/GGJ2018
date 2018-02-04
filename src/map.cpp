@@ -56,7 +56,14 @@ bool isFoliage (uint8_t sprite_code)
         default: return false;
     }
 }
-bool isSolid (uint8_t sprite_code)
+bool isCompletelySolid (uint8_t sprite_code)
+{
+    switch (sprite_code) {
+        case S_WALL: case S_CRATE: return true;
+        default: return false;
+    }
+}
+bool isntWalkable (uint8_t sprite_code)
 {
     switch (sprite_code) {
         case S_WALL: case S_CRATE: case S_CAMPFIRE: return true;
@@ -275,7 +282,7 @@ void growMap (uint16_t grow_speed, uint16_t death_speed)
 
 //http://lodev.org/cgtutor/raycasting.html
 //Returns blocking Sprite
-uint8_t raycastBlocking (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist)
+uint8_t raycastBlocking (float pos_X, float pos_Y, float targ_X, float targ_Y, float dist, bool (*blockTester)(uint8_t))
 {
     float dir_X, dir_Y;
     targToVec(pos_X, pos_Y, targ_X, targ_Y, dir_X, dir_Y);
@@ -325,7 +332,7 @@ uint8_t raycastBlocking (float pos_X, float pos_Y, float targ_X, float targ_Y, f
         }
       //Check if ray has hit a solid
         check_sprite = getSprite(check_X, check_Y);
-        if (isSolid(check_sprite)) { break; }
+        if ((*blockTester)(check_sprite)) { break; }
     }
     return check_sprite;
 }
