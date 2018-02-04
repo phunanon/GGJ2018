@@ -6,8 +6,11 @@ Written in C++/SFML.
 ## Compilation & Execution
 ```
 sudo apt install libsfml-dev cmake make
-git clone https://github.com/phunanon/Infection.git && cd Infection/build
+git clone --depth=1 https://github.com/phunanon/Infection.git
+cd Infection/build
 cmake ../src
 make
 ./Infection
 ```
+All-in-one line:
+`sudo apt install -y libsfml-dev cmake make  &&  git clone --depth=1 https://github.com/phunanon/Infection.git  &&  cd Infection/build  &&  cmake ../src  &&  make  &&  ./Infection`
