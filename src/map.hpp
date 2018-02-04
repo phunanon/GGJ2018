@@ -4,6 +4,7 @@
 #include <string.h> //For memset()
 
 #include "math.hpp"
+#include "config.hpp"
 
 #define B_WATER 0
 #define B_STONE 1
@@ -16,23 +17,10 @@
 #define S_TREE     4
 #define S_BUSH     5
 
-const uint16_t MAP_W = 320, MAP_H = 320;
 const uint32_t MAP_A = MAP_W * MAP_H;
                             //eeeeeeee eeeeeeee     llaf ffssssbb
 extern uint32_t map[MAP_W][MAP_H]; //00000000 00000000 00000000 00000000 - 0000000000000000 entity map id, 0000 RESERVED, 00 luminosity, 0 animated, 000 frame, 0000 sprite, 00 biome
 extern uint64_t game_time;
-
-//Constants
-const uint8_t GEN_ISLANDS = 4;
-const uint8_t GEN_ISLAND_RAD_MIN = 32;
-const uint16_t GEN_ISLAND_RAD_MAX = 64;
-const uint8_t GEN_ISLAND_RES = 4; //'resolution' of an island - how many blobs make it up
-const uint8_t GEN_VILLAGES = 32;
-const uint8_t GEN_VILLAGE_RAD_MIN = 8;
-const uint16_t GEN_VILLAGE_RAD_MAX = 12;
-const uint16_t GEN_GROW_MAP = 8192;
-const uint16_t MAP_GROW_SPEED = 128;
-const uint16_t MAP_DEATH_SPEED = 32;
 
 bool inBounds (uint16_t x, uint16_t y);
 

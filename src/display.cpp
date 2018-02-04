@@ -2,14 +2,12 @@
 #include "map.hpp"
 #include "Entity.cpp"
 #include "math.hpp"
+#include "config.hpp"
 
 
 const uint8_t TILE_SCALE = 32;
 const uint8_t TILE_W = 64, TILE_H = 32;
 const uint8_t SPRITE_W = 64, SPRITE_H = 64;
-const uint16_t WINDOW_W = 1024, WINDOW_H = 512;
-
-const uint8_t HURT_ANI_LEN = 10;
 
 //Display tiles
 sf::Text txt_float;

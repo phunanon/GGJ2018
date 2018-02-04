@@ -1,5 +1,6 @@
 #include "sound.hpp"
 #include "map.hpp"
+#include "config.hpp"
 
 #define E_VILLAGER 0
 #define E_ZOMBIE   1
@@ -10,21 +11,6 @@ class Projectile;
 Entity* prot; //Protagonist
 
 const uint8_t ENTITY_W = 32, ENTITY_H = 64;
-const uint16_t GEN_VILLAGERS = 1024;
-const uint16_t GEN_ZOMBIES = 256;
-const float ANI_INTERVAL = 2;
-const uint8_t SHOOT_DISTANCE = 12;
-const uint8_t ATTACK_DISTANCE = 6;
-const uint8_t LASHOUT_INTERVAL = 20;
-const uint8_t MAX_HEALTH = 255;
-const float NORMAL_SPEED = .032, ATTACK_SPEED = .08;
-const uint8_t PROJECTILE_DAMAGE = 10;
-const uint8_t ATTACK_DAMAGE = 45;
-const float PROJECTILE_SPEED = .32;
-const float LUX_HEAL = .2;
-const uint8_t SOUND_INTERVAL = 40;
-const uint8_t KILL_HP_REWARD = 20;
-const uint8_t CAMPFIRE_DAMAGE = 20;
 
 enum StepDir {
     dir_away,

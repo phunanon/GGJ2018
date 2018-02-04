@@ -6,8 +6,7 @@
 #include "display.cpp"
 #include "map.hpp"
 #include "math.hpp"
-
-const uint16_t RELOAD_TIME = 10;
+#include "config.hpp"
 
 
 int main ()
@@ -125,7 +124,7 @@ int main ()
         } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { //Move protag left (SW)
             angToVec(prot->rot + 270, dir_X, dir_Y);
         }
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && prot_prev_shot + RELOAD_TIME < game_time) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && prot_prev_shot + PROT_RELOAD_TIME < game_time) {
             prot->shootDir();
             prot_prev_shot = game_time;
         }
@@ -161,10 +160,10 @@ int main ()
             if (ent->opacity <= 0) { continue; }
             ent->animate();
             if (ent->is_dead) {
-                ent->opacity -= .005;
+                ent->opacity -= CORPSE_FADE_SPEED;
                 continue;
             }
-            if (rb(0.03)) { ent->think(is_nighttime); }
+            if (rb(THINK_CHANCE)) { ent->think(is_nighttime); }
             ent->move();
 
             ++ents;
@@ -180,7 +179,7 @@ int main ()
       //Projectiles
         for (uint16_t p = 0, plen = projectile.size(); p < plen; ++p) {
             Projectile* proj = projectile[p];
-            proj->opacity -= .01;
+            proj->opacity -= PROJECTILE_FADE_SPEED;
             if (proj->opacity <= 0) {
                 projectile.erase(projectile.begin() + p);
                 --p;
