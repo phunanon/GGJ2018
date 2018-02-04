@@ -1,15 +1,15 @@
 # TODO
 
 ## Must do
-- Fix sprite overlapping in display
+- Fix Sprite/Entity overlapping in display
 - Sprite/Entity enums used exclusively over numbers
 - Sandardise and improve collision detection so Entities can't pass through gaps between Sprites
-- Create proper Makefile and Headers
+- Employ display.hpp and Entity.hpp
 - Enable deletion of Entities (don't rely on index_in_array - a vestige of GGJ)
 - Investigate bias NW loiter (note: testing ri() showed no particular bias)
 
 ## Should do
-- background music
+- Background music
 - Zombie bite animation
 - Write CREDITS.md
 - Blood animation when attacked by zombie
@@ -17,7 +17,8 @@
 - Fix Villager animations looking backwards at certain angles
 - Mouse crosshair
 - Improve crate sprite
-- Fade out and delete the dead
+- Delete the faded out dead
+- Improve apparent protag gun accuracy
 
 ## Could do
 - Animated foliage
@@ -29,12 +30,10 @@
 - More variation in sounds
 - Change protag indicator to above-head arrow
 - Pause
-- Zombies start in one part of the map and spread, protag near this
+- Zombies start in one part of the map and spread, protag near this (tested, is nice, but bias loiter is blocking)
 - Slide instead of stop on Entity/Sprite collision
 - Test protag random gun accuracy
-- -Wall compliance
+- -Wall compliance and -O3 testing
 
 ## Won't do
 - Crate push pressure
-
-## Done
