@@ -6,7 +6,6 @@
 - Sandardise and improve collision detection so Entities can't pass through gaps between Sprites
 - Employ display.hpp and Entity.hpp
 - Enable deletion of Entities (don't rely on index_in_array - a vestige of GGJ)
-- Investigate bias NW loiter (note: testing ri() showed no particular bias)
 
 ## Should do
 - Background music

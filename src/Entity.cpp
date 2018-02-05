@@ -169,8 +169,7 @@ void Entity::heal (float amount)
 
 void Entity::loiter ()
 {
-    moveTowards(pos_X + ri(-3, 3), pos_Y + ri(-3, 3));
-    moveTowards(pos_X + ri(-4, 4), pos_Y + ri(-4, 4));
+    moveTowards(pos_X + ri(-4, 5), pos_Y + ri(-4, 5));
     attack_timeout = 0;
 }
 
