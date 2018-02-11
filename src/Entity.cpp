@@ -49,7 +49,7 @@ class Entity {
     void moveTowards (uint16_t, uint16_t);
     bool tryDir (float, float);
     void move ();
-    void harm (Entity*, uint8_t);
+    bool harm (Entity*, uint8_t);
     void heal (float);
     void animate ();
     void shoot (Entity*);
@@ -99,7 +99,7 @@ void Entity::attack (Entity* who)
     target = who;
     target->targetted_at = game_time;
     speed = ATTACK_SPEED;
-    attack_timeout = 4;
+    attack_timeout = ATTACK_TIMEOUT;
 }
 
 void Entity::lashOut ()
@@ -107,14 +107,17 @@ void Entity::lashOut ()
     if (last_lashout + LASHOUT_INTERVAL < game_time) {
         last_lashout = game_time;
         if (target->type != E_ZOMBIE) {
-            target->harm(this, power_score);
+            attack_timeout = ATTACK_TIMEOUT;
+            if (target->harm(this, power_score)) {
+                attack_timeout = 0;
+            }
         } else {
             attack_timeout = 0;
         }
     }
 }
 
-void Entity::harm (Entity* attacker, uint8_t damage)
+bool Entity::harm (Entity* attacker, uint8_t damage)
 {
     bool is_fatal = false;
     int8_t sound_id = -1;
@@ -144,8 +147,8 @@ void Entity::harm (Entity* attacker, uint8_t damage)
             is_fatal = true;
         }
     }
-  //If a zombie, attack the attacker
-   if (type == E_ZOMBIE) {
+  //If a zombie, and not already attacking, attack the attacker
+   if (type == E_ZOMBIE && !attack_timeout) {
        attack(attacker);
    }
   //Play sound
@@ -155,6 +158,8 @@ void Entity::harm (Entity* attacker, uint8_t damage)
   //Inc kill_count and reward
     attacker->kill_count += is_fatal;
     if (attacker->type == E_VILLAGER) { attacker->max_health += is_fatal * KILL_HP_REWARD; }
+
+    return is_fatal;
 }
 
 void Entity::heal (float amount)
@@ -224,7 +229,7 @@ void Entity::think (bool is_nighttime)
                 }
             }
           //Loiter
-            if (rb(.2)) { loiter(); }
+            if (rb(.1)) { loiter(); }
             break;
         case 1: //Zombie
             if (attack_timeout) {
@@ -247,7 +252,7 @@ void Entity::think (bool is_nighttime)
                     }
                 }
               //Loiter
-                loiter();
+                if (rb(.4)) { loiter(); }
             }
             break;
     }

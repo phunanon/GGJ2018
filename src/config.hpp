@@ -23,18 +23,19 @@ const float PROJECTILE_FADE_SPEED = .01;
 const float CORPSE_FADE_SPEED = 0.005;
 
 const uint8_t SHOOT_DISTANCE = 12;
-const uint8_t ATTACK_DISTANCE = 6;
+const uint8_t ATTACK_DISTANCE = 8;
 const uint8_t LASHOUT_INTERVAL = 20;
+const uint8_t ATTACK_TIMEOUT = 8;
 const uint8_t MAX_HEALTH = 255;
-const float NORMAL_SPEED = .032, ATTACK_SPEED = .08;
-const uint8_t PROJECTILE_DAMAGE = 10;
+const float NORMAL_SPEED = .03, ATTACK_SPEED = .08;
+const uint8_t PROJECTILE_DAMAGE = 12;
 const uint8_t ATTACK_DAMAGE = 45;
-const float PROJECTILE_SPEED = .32;
+const float PROJECTILE_SPEED = .3;
 const float LUX_HEAL = .2;
 const uint8_t KILL_HP_REWARD = 20;
-const uint8_t CAMPFIRE_DAMAGE = 20;
+const uint8_t CAMPFIRE_DAMAGE = 10;
 
-const float THINK_CHANCE = 0.04;
+const float THINK_CHANCE = 0.08;
 const uint16_t PROT_RELOAD_TIME = 10;
 
 #endif

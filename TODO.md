@@ -10,7 +10,7 @@
 - Make timing processor-independent
     - Make think() game_time triggered
     - Lower use of rb()
-    - Make attack_timeout think time independent, and configurable
+    - Make attack_timeout think time independent
 
 ## Should do
 - Background music
@@ -23,7 +23,7 @@
 - Mouse crosshair
 - Improve crate sprite
 - Improve apparent protag gun accuracy
-- Increase loiter likeliness with lux
+- Increase Villager loiter likeliness with lux
 - Improve/increase sound volume fade
 
 ## Could do
