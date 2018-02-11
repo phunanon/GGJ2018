@@ -156,7 +156,6 @@ void genMap ()
             uint16_t y = village_Y + village_radius * cosf(ang);
             setSprite(x, y, 2);
         }
-        size -= step;
     }
   //En-masse
     for (uint16_t y = 1; y < MAP_H - 1; ++y) {
