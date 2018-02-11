@@ -7,9 +7,14 @@
 - Employ display.hpp and Entity.hpp
 - Enable deletion of Entities (don't rely on index_in_array - a vestige of GGJ) (Delete the faded out dead)
 - Investigate SEGFAULT on very low or very high projectile count
+- Make timing processor-independent
+    - Make think() game_time triggered
+    - Lower use of rb()
+    - Make attack_timeout think time independent, and configurable
 
 ## Should do
 - Background music
+- Improve offscreen no-render
 - Zombie bite animation
 - Write CREDITS.md
 - Blood animation when attacked by zombie
@@ -19,6 +24,7 @@
 - Improve crate sprite
 - Improve apparent protag gun accuracy
 - Increase loiter likeliness with lux
+- Improve/increase sound volume fade
 
 ## Could do
 - Animated foliage
