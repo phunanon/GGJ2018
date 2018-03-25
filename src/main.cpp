@@ -13,9 +13,6 @@ int main ()
 {
   //Create the window
     sf::RenderWindow window(sf::VideoMode(WINDOW_W, WINDOW_H), "Infection");
-  //Display rendering loading screen
-
-
   //Declare asset thingies
     sf::Font fnt_arial;
     sf::Image biomeTexImg;
